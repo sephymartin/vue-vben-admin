@@ -55,7 +55,7 @@ const props = withDefaults(defineProps<Props>(), {
   sidebarFixedButton: true,
   sidebarHidden: false,
   sidebarMixedWidth: 80,
-  sidebarTheme: 'dark',
+  sidebarTheme: 'light',
   sidebarWidth: 180,
   sideCollapseWidth: 60,
   tabbarEnable: true,
