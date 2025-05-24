@@ -9,5 +9,5 @@ import { requestClient } from '#/api/request';
 //   return requestClient.get<UserInfo>('/user/info');
 // }
 export async function getUserInfoApi() {
-  return requestClient.get<UserInfo>('/user/info');
+  return requestClient.get<UserInfo>('/admin/user/info');
 }

@@ -6,7 +6,7 @@ import { useAccessStore, useUserStore } from '@vben/stores';
 import { startProgress, stopProgress } from '@vben/utils';
 
 import { accessRoutes, coreRouteNames } from '#/router/routes';
-import { useAuthStore } from '#/store';
+import { useAuthStore, useDictStore } from '#/store';
 
 import { generateAccess } from './access';
 
@@ -49,6 +49,7 @@ function setupAccessGuard(router: Router) {
     const accessStore = useAccessStore();
     const userStore = useUserStore();
     const authStore = useAuthStore();
+    const dictStore = useDictStore();
 
     // 基本路由，这些路由不需要进入权限拦截
     if (coreRouteNames.includes(to.name as string)) {
@@ -83,6 +84,10 @@ function setupAccessGuard(router: Router) {
         };
       }
       return to;
+    }
+
+    if (!dictStore.isInitialized) {
+      await dictStore.initDicts();
     }
 
     // 是否已经生成过动态路由
