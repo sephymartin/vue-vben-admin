@@ -108,7 +108,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
   ];
 }
 
-export function useColumns<T = InvestProjectApi.InvestProject>(
+export function useColumns<T = InvestProjectApi.Project>(
   onActionClick: OnActionClickFn<T>,
 ): VxeTableGridOptions['columns'] {
   return [

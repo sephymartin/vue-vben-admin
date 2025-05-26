@@ -1,23 +1,21 @@
 <script lang="ts" setup>
-import type { Recordable } from '@vben/types';
-
 import type {
   OnActionClickParams,
   VxeTableGridOptions,
 } from '#/adapter/vxe-table';
-import type { InvestProjectApi } from '#/api';
+import type { InvestProjectApi, InvestUserApi } from '#/api';
 
 import { Page, useVbenDrawer } from '@vben/common-ui';
 import { Plus } from '@vben/icons';
 
-import { Button, message, Modal } from 'ant-design-vue';
+import { Button, message, Modal, Switch } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
-  deleteInvestProject,
-  listInvestProjectList,
-  updateInvestProject,
-} from '#/api';
+  deleteInvestUser,
+  listInvestUserList,
+  updateInvestUser,
+} from '#/api/invest/user';
 import { $t } from '#/locales';
 
 import { useColumns, useGridFormSchema } from './data';
@@ -41,7 +39,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     proxyConfig: {
       ajax: {
         query: async ({ page }, formValues) => {
-          return await listInvestProjectList({
+          return await listInvestUserList({
             page: page.currentPage,
             pageSize: page.pageSize,
             ...formValues,
@@ -102,40 +100,42 @@ function confirm(content: string, title: string) {
  * @param row 行数据
  * @returns 返回false则中止改变，返回其他值（undefined、true）则允许改变
  */
-async function onStatusChange(
-  newStatus: number,
-  row: InvestProjectApi.Project,
-) {
-  const status: Recordable<string> = {
-    0: '禁用',
-    1: '启用',
+async function onStatusChange(newStatus: boolean, row: InvestUserApi.User) {
+  const status: Record<string, string> = {
+    false: '禁用',
+    true: '启用',
   };
   try {
     await confirm(
-      `你要将${row.name}的状态切换为 【${status[newStatus.toString()]}】 吗？`,
+      `你要将${row.investUserName}的状态切换为 【${status[newStatus.toString()]}】 吗？`,
       `切换状态`,
     );
-    await updateInvestProject(row.id, { status: newStatus });
+    await updateInvestUser({
+      investUserName: row.investUserName,
+      email: row.email,
+      // add other required fields if needed
+      enableStatus: newStatus,
+    });
     return true;
   } catch {
     return false;
   }
 }
 
-function onEdit(row: InvestProjectApi.Project) {
+function onEdit(row: InvestUserApi.User) {
   formDrawerApi.setData(row).open();
 }
 
-function onDelete(row: InvestProjectApi.Project) {
+function onDelete(row: InvestUserApi.User) {
   const hideLoading = message.loading({
-    content: $t('ui.actionMessage.deleting', [row.name]),
+    content: $t('ui.actionMessage.deleting', [row.investUserName]),
     duration: 0,
     key: 'action_process_msg',
   });
-  deleteInvestProject(row.id)
+  deleteInvestUser(row.id)
     .then(() => {
       message.success({
-        content: $t('ui.actionMessage.deleteSuccess', [row.name]),
+        content: $t('ui.actionMessage.deleteSuccess', [row.investUserName]),
         key: 'action_process_msg',
       });
       onRefresh();
@@ -156,12 +156,15 @@ function onCreate() {
 <template>
   <Page auto-content-height>
     <FormDrawer />
-    <Grid :table-title="$t('invest.project.list')">
+    <Grid :table-title="$t('invest.user.list')">
       <template #toolbar-tools>
         <Button type="primary" @click="onCreate">
           <Plus class="size-5" />
-          {{ $t('ui.actionTitle.create', [$t('invest.project.title')]) }}
+          {{ $t('ui.actionTitle.create', [$t('invest.user.title')]) }}
         </Button>
+      </template>
+      <template #enableStatus="{ row }">
+        <Switch v-model:checked="row.enableStatus" :disabled="true" />
       </template>
     </Grid>
   </Page>

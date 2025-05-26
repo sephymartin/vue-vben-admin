@@ -21,6 +21,15 @@ const routes: RouteRecordRaw[] = [
         },
         component: () => import('#/views/invest/project/list.vue'),
       },
+      {
+        path: '/invest/user',
+        name: 'InvestUser',
+        meta: {
+          icon: 'mdi:account-group',
+          title: $t('invest.user.title'),
+        },
+        component: () => import('#/views/invest/user/list.vue'),
+      },
     ],
   },
 ];

@@ -84,6 +84,20 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
     }),
   );
 
+  client.addResponseInterceptor({
+    fulfilled: (data) => {
+      // Check if response has pagination structure
+      if (data && 'list' in data && 'total' in data) {
+        return {
+          ...data,
+          items: data.list,
+          total: data.total,
+        };
+      }
+      return data;
+    },
+  });
+
   // token过期的处理
   client.addResponseInterceptor(
     authenticateResponseInterceptor({

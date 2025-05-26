@@ -1,7 +1,11 @@
 {
+  "title": "投资管理",
   "project": {
     "title": "投资项目",
     "list": "项目列表"
   },
-  "title": "投资管理"
+  "user": {
+    "title": "投资人",
+    "list": "投资人列表"
+  }
 }

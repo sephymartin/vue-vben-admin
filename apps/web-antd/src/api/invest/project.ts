@@ -57,9 +57,9 @@ export namespace InvestProjectApi {
 /**
  * 获取投资项目列表数据
  */
-async function queryInvestProjectList(params: Recordable<any>) {
+export async function listInvestProjectList(params: Recordable<any>) {
   return requestClient.get<Array<InvestProjectApi.Project>>(
-    '/admin/invest/queryInvestProjectList',
+    '/admin/invest/project/list',
     { params },
   );
 }
@@ -68,8 +68,10 @@ async function queryInvestProjectList(params: Recordable<any>) {
  * 创建项目
  * @param data 项目数据
  */
-async function createProject(data: Omit<InvestProjectApi.Project, 'id'>) {
-  return requestClient.post('/admin/invest/createProject', data);
+export async function createInvestProject(
+  data: Omit<InvestProjectApi.Project, 'id'>,
+) {
+  return requestClient.post('/admin/invest/project/createProject', data);
 }
 
 /**
@@ -78,19 +80,17 @@ async function createProject(data: Omit<InvestProjectApi.Project, 'id'>) {
  * @param id 项目 ID
  * @param data 项目数据
  */
-async function updateProject(
+export async function updateInvestProject(
   id: string,
   data: Omit<InvestProjectApi.Project, 'id'>,
 ) {
-  return requestClient.put(`/admin/invest/updateProject/${id}`, data);
+  return requestClient.post(`/admin/invest/project/updateProject/${id}`, data);
 }
 
 /**
  * 删除项目
  * @param id 项目 ID
  */
-async function deleteProject(id: number) {
-  return requestClient.delete(`/admin/invest/deleteProject/${id}`);
+export async function deleteInvestProject(id: number) {
+  return requestClient.post(`/admin/invest/project/delete/${id}`);
 }
-
-export { createProject, deleteProject, queryInvestProjectList, updateProject };

@@ -3,7 +3,7 @@ import type { DataNode } from 'ant-design-vue/es/tree';
 
 import type { Recordable } from '@vben/types';
 
-import type { InvestProjectApi } from '#/api/invest/project';
+import type { InvestUserApi } from '#/api/invest/user';
 
 import { computed, ref } from 'vue';
 
@@ -13,14 +13,14 @@ import { IconifyIcon } from '@vben/icons';
 import { Spin } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
-import { createInvestProject, updateInvestProject } from '#/api/invest/project';
+import { createInvestUser, updateInvestUser } from '#/api/invest/user';
 import { $t } from '#/locales';
 
 import { useFormSchema } from '../data';
 
 const emits = defineEmits(['success']);
 
-const formData = ref<InvestProjectApi.Project>();
+const formData = ref<InvestUserApi.User>();
 
 const [Form, formApi] = useVbenForm({
   schema: useFormSchema(),
@@ -37,10 +37,7 @@ const [Drawer, drawerApi] = useVbenDrawer({
     if (!valid) return;
     const values = await formApi.getValues();
     drawerApi.lock();
-    (id.value
-      ? updateInvestProject(id.value, values)
-      : createInvestProject(values)
-    )
+    (id.value ? updateInvestUser(values) : createInvestUser(values))
       .then(() => {
         emits('success');
         drawerApi.close();
@@ -51,7 +48,7 @@ const [Drawer, drawerApi] = useVbenDrawer({
   },
   onOpenChange(isOpen) {
     if (isOpen) {
-      const data = drawerApi.getData<InvestProjectApi.Project>();
+      const data = drawerApi.getData<InvestUserApi.User>();
       formApi.resetForm();
       if (data) {
         formData.value = data;
