@@ -42,24 +42,23 @@ export async function listInvestUserList(params: Recordable<any>) {
  * 创建项目
  * @param data 项目数据
  */
-export async function createInvestUser(data: InvestUserApi.User) {
-  return requestClient.post('/admin/invest/createProject', data);
+export async function createInvestUser(data: Omit<InvestUserApi.User, 'id'>) {
+  return requestClient.post('/admin/invest/user/create', data);
 }
 
 /**
  * 更新用户
  *
- * @param id 项目 ID
  * @param data 项目数据
  */
-export async function updateInvestUser(data: InvestUserApi.User) {
+export async function updateInvestUser(data: Partial<InvestUserApi.User>) {
   return requestClient.post('/admin/invest/user/update', data);
 }
 
 /**
  * 删除用户
- * @param id 项目 ID
+ * @param data 项目 ID
  */
-export async function deleteInvestUser(id: number) {
-  return requestClient.delete(`/admin/invest/user/delete?id=${id}`);
+export async function deleteInvestUser(data: Partial<InvestUserApi.User>) {
+  return requestClient.post('/admin/invest/user/delete', data);
 }

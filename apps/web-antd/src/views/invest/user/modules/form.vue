@@ -37,14 +37,29 @@ const [Drawer, drawerApi] = useVbenDrawer({
     if (!valid) return;
     const values = await formApi.getValues();
     drawerApi.lock();
-    (id.value ? updateInvestUser(values) : createInvestUser(values))
-      .then(() => {
-        emits('success');
-        drawerApi.close();
+    // 修改这里的逻辑
+    if (id.value) {
+      updateInvestUser({
+        id: id.value,
+        ...values,
       })
-      .catch(() => {
-        drawerApi.unlock();
-      });
+        .then(() => {
+          emits('success');
+          drawerApi.close();
+        })
+        .catch(() => {
+          drawerApi.unlock();
+        });
+    } else {
+      createInvestUser(values)
+        .then(() => {
+          emits('success');
+          drawerApi.close();
+        })
+        .catch(() => {
+          drawerApi.unlock();
+        });
+    }
   },
   onOpenChange(isOpen) {
     if (isOpen) {
@@ -57,23 +72,9 @@ const [Drawer, drawerApi] = useVbenDrawer({
       } else {
         id.value = undefined;
       }
-
-      if (permissions.value.length === 0) {
-        loadPermissions();
-      }
     }
   },
 });
-
-async function loadPermissions() {
-  loadingPermissions.value = true;
-  try {
-    // const res = await getMenuList();
-    // permissions.value = res as unknown as DataNode[];
-  } finally {
-    loadingPermissions.value = false;
-  }
-}
 
 const getDrawerTitle = computed(() => {
   return formData.value?.id

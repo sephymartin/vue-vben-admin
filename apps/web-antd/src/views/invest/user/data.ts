@@ -2,6 +2,8 @@ import type { VbenFormSchema } from '#/adapter/form';
 import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { InvestUserApi } from '#/api';
 
+import { z } from '#/adapter/form';
+import { $t } from '#/locales';
 import { useDictStore } from '#/store';
 
 const dictStore = useDictStore();
@@ -18,19 +20,21 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'Input',
       fieldName: 'email',
       label: '电子邮件',
-      rules: [
-        { required: true, message: '请输入邮箱地址' },
-        { type: 'email', message: '请输入正确的邮箱地址' },
-      ],
+      rules: z.string().email('请输入正确的邮箱'),
     },
     {
-      component: 'Select',
-      fieldName: 'enableStatus',
-      label: '状态',
+      component: 'RadioGroup',
       componentProps: {
-        options: dictStore.getDictItems('enable_status'),
+        buttonStyle: 'solid',
+        options: [
+          { label: $t('common.enabled'), value: true },
+          { label: $t('common.disabled'), value: false },
+        ],
+        optionType: 'button',
       },
       defaultValue: true,
+      fieldName: 'enableStatus',
+      label: '状态',
     },
   ];
 }
@@ -61,23 +65,37 @@ export function useGridFormSchema(): VbenFormSchema[] {
 
 export function useColumns<T = InvestUserApi.User>(
   onActionClick: OnActionClickFn<T>,
+  onStatusChange?: (newStatus: any, row: T) => PromiseLike<boolean | undefined>,
 ): VxeTableGridOptions['columns'] {
   return [
     {
       field: 'investUserName',
       title: '投资人',
-      width: 150,
+      minWidth: 150,
     },
     {
       field: 'email',
       title: '电子邮件',
-      width: 200,
+      minWidth: 200,
     },
     {
+      cellRender: {
+        attrs: { beforeChange: onStatusChange },
+        name: onStatusChange ? 'CellSwitch' : 'CellTag',
+      },
       field: 'enableStatus',
       title: '状态',
-      width: 100,
-      slots: { default: 'enableStatus' },
+      minWidth: 150,
+    },
+    {
+      field: 'investAmt',
+      title: '投资金额',
+      cellRender: { name: 'CellAmount' },
+    },
+    {
+      field: 'investProjectsCount',
+      title: '投资项目数',
+      minWidth: 150,
     },
     {
       align: 'center',
@@ -86,6 +104,7 @@ export function useColumns<T = InvestUserApi.User>(
           nameField: 'investUserName',
           nameTitle: '操作',
           onClick: onActionClick,
+          codes: ['edit', 'delete'],
         },
         name: 'CellOperation',
       },
