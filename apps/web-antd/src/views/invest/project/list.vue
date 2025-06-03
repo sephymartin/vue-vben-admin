@@ -32,7 +32,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
     fieldMappingTime: [['createTime', ['startTime', 'endTime']]],
     schema: useGridFormSchema(),
-    submitOnChange: true,
+    submitOnChange: false,
   },
   gridOptions: {
     columns: useColumns(onActionClick, onStatusChange),

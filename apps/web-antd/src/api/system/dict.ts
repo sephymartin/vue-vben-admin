@@ -1,21 +1,15 @@
-import { requestClient } from '#/api/request';
+import type { SelectOption } from '@vben/types';
 
-export interface DictItem {
-  label: string;
-  value: number | string;
-  color?: string;
-  disabled?: boolean;
-  [type: string]: any;
-}
+import { requestClient } from '#/api/request';
 
 export async function getDictsByTypes(types?: string | string[]) {
   if (!types) {
-    return requestClient.get<Map<string, DictItem[]>>(
+    return requestClient.get<Map<string, SelectOption[]>>(
       '/admin/sys/dict/getByTypes',
     );
   }
   const typesParam = Array.isArray(types) ? types.join(',') : types;
-  return requestClient.get<Map<string, DictItem[]>>(
+  return requestClient.get<Map<string, SelectOption[]>>(
     `/admin/sys/dict/getByTypes?types=${typesParam}`,
   );
 }

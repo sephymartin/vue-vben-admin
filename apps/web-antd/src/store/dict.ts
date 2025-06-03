@@ -1,11 +1,11 @@
-import type { DictItem } from '#/api/system/dict';
+import type { SelectOption } from '@vben/types';
 
 import { defineStore } from 'pinia';
 
 import { getDictsByTypes } from '#/api/system/dict';
 
 interface DictState {
-  dictCache: Map<string, DictItem[]>;
+  dictCache: Map<string, SelectOption[]>;
   isInitialized: boolean;
 }
 
@@ -28,7 +28,7 @@ export const useDictStore = defineStore('dict', {
       }
     },
 
-    getDictItems(type: string): DictItem[] {
+    getDictItems(type: string): SelectOption[] {
       return this.dictCache.get(type) || [];
     },
   },

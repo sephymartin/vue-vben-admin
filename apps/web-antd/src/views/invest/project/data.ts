@@ -30,19 +30,10 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         min: 0,
         precision: 2,
+        prefix: '￥',
         style: { width: '100%' },
       },
       rules: 'required',
-    },
-    {
-      component: 'InputNumber',
-      fieldName: 'realTotalAmt',
-      label: '实际筹集金额',
-      componentProps: {
-        min: 0,
-        precision: 2,
-        style: { width: '100%' },
-      },
     },
     {
       component: 'DatePicker',
@@ -61,13 +52,16 @@ export function useFormSchema(): VbenFormSchema[] {
       fieldName: 'managerId',
       label: '项目经理',
       rules: 'required',
+      componentProps: {
+        options: dictStore.getDictItems('invest_project_type'),
+      },
     },
     {
       component: 'Select',
       fieldName: 'projectStatus',
       label: '项目状态',
       componentProps: {
-        options: dictStore.getDictItems('invest_project_status'),
+        options: dictStore.getDictItems('invest_user'),
       },
       rules: 'required',
     },
