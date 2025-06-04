@@ -31,5 +31,11 @@ export const useDictStore = defineStore('dict', {
     getDictItems(type: string): SelectOption[] {
       return this.dictCache.get(type) || [];
     },
+
+    getDictLabel(type: string, value: number | string): string {
+      const items = this.getDictItems(type);
+      const item = items.find((item) => item.value === value);
+      return item ? item.label : String(value);
+    },
   },
 });

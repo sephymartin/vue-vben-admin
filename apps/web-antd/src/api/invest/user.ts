@@ -31,7 +31,7 @@ export namespace InvestUserApi {
  */
 export async function listInvestUserList(params: Recordable<any>) {
   return requestClient.get<Array<InvestUserApi.User>>(
-    '/admin/invest/user/list',
+    '/admin/invest/user/queryUser',
     {
       params,
     },
@@ -43,7 +43,7 @@ export async function listInvestUserList(params: Recordable<any>) {
  * @param data 项目数据
  */
 export async function createInvestUser(data: Omit<InvestUserApi.User, 'id'>) {
-  return requestClient.post('/admin/invest/user/create', data);
+  return requestClient.post('/admin/invest/user/createUser', data);
 }
 
 /**
@@ -52,7 +52,7 @@ export async function createInvestUser(data: Omit<InvestUserApi.User, 'id'>) {
  * @param data 项目数据
  */
 export async function updateInvestUser(data: Partial<InvestUserApi.User>) {
-  return requestClient.post('/admin/invest/user/update', data);
+  return requestClient.post('/admin/invest/user/updateUser', data);
 }
 
 /**
@@ -60,5 +60,5 @@ export async function updateInvestUser(data: Partial<InvestUserApi.User>) {
  * @param data 项目 ID
  */
 export async function deleteInvestUser(data: Partial<InvestUserApi.User>) {
-  return requestClient.post('/admin/invest/user/delete', data);
+  return requestClient.post('/admin/invest/user/deleteUser', data);
 }

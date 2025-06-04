@@ -155,7 +155,7 @@ function onCreate() {
 </script>
 <template>
   <Page auto-content-height>
-    <FormDrawer />
+    <FormDrawer @success="onRefresh" />
     <Grid :table-title="$t('invest.project.list')">
       <template #toolbar-tools>
         <Button type="primary" @click="onCreate">

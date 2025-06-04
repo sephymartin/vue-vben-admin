@@ -59,7 +59,7 @@ export namespace InvestProjectApi {
  */
 export async function listInvestProjectList(params: Recordable<any>) {
   return requestClient.get<Array<InvestProjectApi.Project>>(
-    '/admin/invest/project/list',
+    '/admin/invest/project/queryProject',
     { params },
   );
 }

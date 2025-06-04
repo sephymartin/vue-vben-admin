@@ -38,11 +38,17 @@ export function useFormSchema(): VbenFormSchema[] {
     {
       component: 'DatePicker',
       fieldName: 'startDate',
+      componentProps: {
+        valueFormat: 'YYYY-MM-DD',
+      },
       label: '项目开始日期',
       rules: 'required',
     },
     {
       component: 'DatePicker',
+      componentProps: {
+        valueFormat: 'YYYY-MM-DD',
+      },
       fieldName: 'endDate',
       label: '项目结束日期',
       rules: 'required',
@@ -53,7 +59,7 @@ export function useFormSchema(): VbenFormSchema[] {
       label: '项目经理',
       rules: 'required',
       componentProps: {
-        options: dictStore.getDictItems('invest_project_type'),
+        options: dictStore.getDictItems('invest_user'),
       },
     },
     {
@@ -61,7 +67,7 @@ export function useFormSchema(): VbenFormSchema[] {
       fieldName: 'projectStatus',
       label: '项目状态',
       componentProps: {
-        options: dictStore.getDictItems('invest_user'),
+        options: dictStore.getDictItems('invest_project_status'),
       },
       rules: 'required',
     },
@@ -74,6 +80,8 @@ export function useFormSchema(): VbenFormSchema[] {
 }
 
 export function useGridFormSchema(): VbenFormSchema[] {
+  const dictStore = useDictStore();
+
   return [
     {
       component: 'Input',
@@ -88,12 +96,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
     {
       component: 'Select',
       componentProps: {
-        options: [
-          { label: '准备中', value: 'PREPARE' },
-          { label: '进行中', value: 'INPROCESS' },
-          { label: '已结束', value: 'FINISHED' },
-          { label: '已取消', value: 'CANCELLED' },
-        ],
+        options: dictStore.getDictItems('invest_project_status'),
         allowClear: true,
       },
       fieldName: 'projectStatus',
@@ -105,6 +108,8 @@ export function useGridFormSchema(): VbenFormSchema[] {
 export function useColumns<T = InvestProjectApi.Project>(
   onActionClick: OnActionClickFn<T>,
 ): VxeTableGridOptions['columns'] {
+  const dictStore = useDictStore();
+
   return [
     {
       field: 'projectName',
@@ -115,16 +120,31 @@ export function useColumns<T = InvestProjectApi.Project>(
       field: 'projectType',
       title: '项目类型',
       width: 120,
+      cellRender: {
+        name: 'CellTag',
+        options: dictStore.getDictItems('invest_project_type'),
+      },
     },
     {
       field: 'expectTotalAmt',
       title: '目标筹集金额',
       width: 150,
+      cellRender: { name: 'CellAmount' },
     },
     {
       field: 'realTotalAmt',
       title: '实际筹集金额',
       width: 150,
+      cellRender: { name: 'CellAmount' },
+    },
+    {
+      field: 'managerId',
+      title: '项目经理',
+      width: 120,
+      cellRender: {
+        name: 'CellTag',
+        options: dictStore.getDictItems('invest_user'),
+      },
     },
     {
       field: 'startDate',
@@ -142,6 +162,7 @@ export function useColumns<T = InvestProjectApi.Project>(
       width: 100,
       cellRender: {
         name: 'CellTag',
+        options: dictStore.getDictItems('invest_project_status'),
       },
     },
     {
