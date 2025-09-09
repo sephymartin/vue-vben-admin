@@ -179,11 +179,13 @@ export function useColumns<T = InvestProjectApi.Project>(
           onClick: onActionClick,
         },
         name: 'CellOperation',
+        options: ['edit', '资金明细', 'delete'],
       },
+
       field: 'operation',
       fixed: 'right',
       title: '操作',
-      width: 130,
+      width: 200,
     },
   ];
 }

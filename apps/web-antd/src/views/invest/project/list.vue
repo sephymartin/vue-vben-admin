@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { Recordable } from '@vben/types';
+import type { DrawerPlacement, DrawerState } from '@vben/common-ui';
 
 import type {
   OnActionClickParams,
@@ -10,22 +10,25 @@ import type { InvestProjectApi } from '#/api';
 import { Page, useVbenDrawer } from '@vben/common-ui';
 import { Plus } from '@vben/icons';
 
-import { Button, message, Modal } from 'ant-design-vue';
+import { Button, message } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import {
-  deleteInvestProject,
-  listInvestProjectList,
-  updateInvestProject,
-} from '#/api';
+import { deleteInvestProject, listInvestProjectList } from '#/api';
 import { $t } from '#/locales';
 
 import { useColumns, useGridFormSchema } from './data';
 import Form from './modules/form.vue';
+import InContentDemo from './modules/fundDetail.vue';
 
 const [FormDrawer, formDrawerApi] = useVbenDrawer({
   connectedComponent: Form,
   destroyOnClose: true,
+});
+
+const [InContentDrawer, inContentDrawerApi] = useVbenDrawer({
+  // 连接抽离的组件
+  connectedComponent: InContentDemo,
+  // placement: 'left',
 });
 
 const [Grid, gridApi] = useVbenVxeGrid({
@@ -35,7 +38,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     submitOnChange: false,
   },
   gridOptions: {
-    columns: useColumns(onActionClick, onStatusChange),
+    columns: useColumns(onActionClick),
     height: 'auto',
     keepSource: true,
     proxyConfig: {
@@ -73,6 +76,10 @@ function onActionClick(e: OnActionClickParams<InvestProjectApi.Project>) {
       onEdit(e.row);
       break;
     }
+    case '资金明细': {
+      onShowFundDetail(e.row);
+      break;
+    }
   }
 }
 
@@ -81,45 +88,32 @@ function onActionClick(e: OnActionClickParams<InvestProjectApi.Project>) {
  * @param content 提示内容
  * @param title 提示标题
  */
-function confirm(content: string, title: string) {
-  return new Promise((reslove, reject) => {
-    Modal.confirm({
-      content,
-      onCancel() {
-        reject(new Error('已取消'));
-      },
-      onOk() {
-        reslove(true);
-      },
-      title,
-    });
-  });
-}
 
-/**
- * 状态开关即将改变
- * @param newStatus 期望改变的状态值
- * @param row 行数据
- * @returns 返回false则中止改变，返回其他值（undefined、true）则允许改变
- */
-async function onStatusChange(
-  newStatus: number,
+// function confirm(content: string, title: string) {
+//   return new Promise((reslove, reject) => {
+//     Modal.confirm({
+//       content,
+//       onCancel() {
+//         reject(new Error('已取消'));
+//       },
+//       onOk() {
+//         reslove(true);
+//       },
+//       title,
+//     });
+//   });
+// }
+
+function onShowFundDetail(
   row: InvestProjectApi.Project,
+  placement: DrawerPlacement = 'right',
 ) {
-  const status: Recordable<string> = {
-    0: '禁用',
-    1: '启用',
-  };
-  try {
-    await confirm(
-      `你要将${row.name}的状态切换为 【${status[newStatus.toString()]}】 吗？`,
-      `切换状态`,
-    );
-    await updateInvestProject(row.id, { status: newStatus });
-    return true;
-  } catch {
-    return false;
+  const state: Partial<DrawerState> = { class: '', placement };
+  if (placement === 'top') {
+    // 页面顶部区域的层级只有200，所以设置一个低于200的值，抽屉从顶部滑出来的时候才比较合适
+    state.zIndex = 199;
   }
+  inContentDrawerApi.setData(row).setState(state).open();
 }
 
 function onEdit(row: InvestProjectApi.Project) {
@@ -156,6 +150,7 @@ function onCreate() {
 <template>
   <Page auto-content-height>
     <FormDrawer @success="onRefresh" />
+    <InContentDrawer @success="onRefresh" />
     <Grid :table-title="$t('invest.project.list')">
       <template #toolbar-tools>
         <Button type="primary" @click="onCreate">

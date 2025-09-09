@@ -52,6 +52,15 @@ export namespace InvestProjectApi {
      */
     projectRemark: string;
   }
+
+  export interface ProjectFund {
+    [key: number]: any;
+    id: null | number;
+
+    investUserId: null | number;
+
+    investAmt: number;
+  }
 }
 
 /**
@@ -93,4 +102,20 @@ export async function updateInvestProject(
  */
 export async function deleteInvestProject(id: number) {
   return requestClient.post(`/admin/invest/project/delete/${id}`);
+}
+
+export async function getFundListByProjectId(projectId: number) {
+  return requestClient.get(
+    `/admin/invest/project/listProjectFunds?projectId=${projectId}`,
+  );
+}
+
+export async function saveFundList(
+  projectId: number,
+  fundList: InvestProjectApi.ProjectFund[],
+) {
+  return requestClient.post(`/admin/invest/project/saveProjectFunds`, {
+    projectId,
+    fundList,
+  });
 }
