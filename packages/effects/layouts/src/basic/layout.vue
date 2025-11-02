@@ -158,7 +158,9 @@ function clickLogo() {
 function autoCollapseMenuByRouteMeta(route: RouteLocationNormalizedLoaded) {
   // 只在双列模式下生效
   if (
-    preferences.app.layout === 'sidebar-mixed-nav' &&
+    ['header-mixed-nav', 'sidebar-mixed-nav'].includes(
+      preferences.app.layout,
+    ) &&
     route.meta &&
     route.meta.hideInMenu
   ) {
@@ -299,6 +301,9 @@ const headerSlots = computed(() => {
         </template>
         <template #notification>
           <slot name="notification"></slot>
+        </template>
+        <template #timezone>
+          <slot name="timezone"></slot>
         </template>
         <template v-for="item in headerSlots" #[item]>
           <slot :name="item"></slot>
