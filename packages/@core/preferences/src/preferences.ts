@@ -69,9 +69,11 @@ class PreferenceManager {
     this.initialPreferences = merge({}, overrides, defaultPreferences);
 
     // 加载并合并当前存储的偏好设置
+    // 合并顺序：overrides > cachedPreferences > initialPreferences
+    // overrides 具有最高优先级，确保代码中的配置始终覆盖缓存
     const mergedPreference = merge(
       {},
-      // overrides,
+      overrides,
       this.loadCachedPreferences() || {},
       this.initialPreferences,
     );

@@ -45,10 +45,19 @@ function setupCommonGuard(router: Router) {
  * @param router
  */
 function setupAccessGuard(router: Router) {
+  // 页面首次加载时重置权限检查状态，确保每次刷新都从后端获取最新菜单
+  let isFirstLoad = true;
+
   router.beforeEach(async (to, from) => {
     const accessStore = useAccessStore();
     const userStore = useUserStore();
     const authStore = useAuthStore();
+
+    // 页面首次加载时重置权限状态，强制重新获取菜单
+    if (isFirstLoad) {
+      isFirstLoad = false;
+      accessStore.setIsAccessChecked(false);
+    }
 
     // 基本路由，这些路由不需要进入权限拦截
     if (coreRouteNames.includes(to.name as string)) {
