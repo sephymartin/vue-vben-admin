@@ -22,9 +22,10 @@ interface RouteMeta {
   affixTabOrder?: number;
   /**
    * 需要特定的角色标识才可以访问
+   * 支持字符串或字符串数组
    * @default []
    */
-  authority?: string[];
+  authority?: string | string[];
   /**
    * 徽标
    */

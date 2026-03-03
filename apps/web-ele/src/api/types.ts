@@ -1,4 +1,16 @@
 /**
+ * RFC 7807 ProblemDetail 错误响应格式
+ */
+export interface ProblemDetail {
+  type?: string;
+  title: string;
+  status: number;
+  detail?: string;
+  instance?: string;
+  [key: string]: any; // 允许扩展字段
+}
+
+/**
  * 后端分页结果格式
  */
 export interface BackendPagingResult<T> {

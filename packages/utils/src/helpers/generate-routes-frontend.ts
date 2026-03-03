@@ -38,7 +38,14 @@ function hasAuthority(route: RouteRecordRaw, access: string[]) {
   if (!authority) {
     return true;
   }
-  const canAccess = access.some((value) => authority.includes(value));
+
+  // 将 authority 统一转换为数组处理（兼容字符串和数组）
+  const authorities = Array.isArray(authority) ? authority : [authority];
+
+  // 检查用户是否拥有所需权限
+  const canAccess = access.some((userPermission) =>
+    authorities.includes(userPermission),
+  );
 
   return canAccess || (!canAccess && menuHasVisibleWithForbidden(route));
 }

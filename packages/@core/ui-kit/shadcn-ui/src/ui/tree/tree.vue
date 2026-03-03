@@ -6,7 +6,7 @@ import type { ClassType, Recordable } from '@vben-core/typings';
 
 import type { TreeProps } from './types';
 
-import { onMounted, ref, watchEffect } from 'vue';
+import { computed, onMounted, ref, watchEffect } from 'vue';
 
 import { ChevronRight, IconifyIcon } from '@vben-core/icons';
 import { cn, get } from '@vben-core/shared/utils';
@@ -176,6 +176,29 @@ function unCheckAll() {
   updateTreeValue();
 }
 
+// 计算是否所有权限都被选中
+const isAllChecked = computed(() => {
+  if (!props.multiple || !Array.isArray(modelValue.value)) {
+    return false;
+  }
+  // 获取所有可用的权限 ID（排除禁用的）
+  const allAvailableIds = new Set(
+    flattenData.value
+      .filter((item) => !get(item.value, props.disabledField))
+      .map((item) => get(item.value, props.valueField)),
+  );
+  // 如果没有任何可用权限，返回 false
+  if (allAvailableIds.size === 0) {
+    return false;
+  }
+  // 检查选中的权限是否包含所有可用权限
+  const selectedIds = new Set(modelValue.value);
+  return (
+    selectedIds.size === allAvailableIds.size &&
+    [...allAvailableIds].every((id) => selectedIds.has(id))
+  );
+});
+
 function isNodeDisabled(item: FlattenedItem<Recordable<any>>) {
   return props.disabled || get(item.value, props.disabledField);
 }
@@ -306,6 +329,7 @@ defineExpose({
         />
         <Checkbox
           v-if="multiple"
+          :checked="isAllChecked"
           @click.stop
           @update:checked="(checked) => (checked ? checkAll() : unCheckAll())"
         />

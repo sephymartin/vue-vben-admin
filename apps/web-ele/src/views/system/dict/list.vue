@@ -16,7 +16,7 @@ import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteDictType, queryDictTypes } from '#/api/system/dict';
 import { $t } from '#/locales';
 
-import { useTypeColumns } from './data';
+import { useTypeColumns, useTypeGridFormSchema } from './data';
 import ItemDrawer from './modules/item-drawer.vue';
 import TypeForm from './modules/type-form.vue';
 
@@ -48,6 +48,10 @@ function onTypeActionClick({
 }
 
 const [TypeGrid, typeGridApi] = useVbenVxeGrid({
+  formOptions: {
+    schema: useTypeGridFormSchema(),
+    submitOnChange: true,
+  },
   gridOptions: {
     columns: useTypeColumns(onTypeActionClick),
     height: 'auto',
@@ -70,6 +74,7 @@ const [TypeGrid, typeGridApi] = useVbenVxeGrid({
       custom: true,
       export: false,
       refresh: true,
+      search: true,
       zoom: true,
     },
   } as VxeTableGridOptions<DictApi.DictType>,

@@ -12,11 +12,27 @@ export namespace SystemDeptApi {
 }
 
 /**
+ * 部门数据适配器
+ * 将后端返回的 deptLabel 字段转换为前端期望的 name 字段
+ */
+function adaptDeptData(data: any[]): SystemDeptApi.SystemDept[] {
+  if (!data || !Array.isArray(data)) {
+    return [];
+  }
+
+  return data.map((item) => ({
+    ...item,
+    name: item.deptLabel || item.name,
+    children: item.children ? adaptDeptData(item.children) : undefined,
+  }));
+}
+
+/**
  * 获取部门列表数据
  */
 async function getDeptList() {
   return requestClient.get<Array<SystemDeptApi.SystemDept>>(
-    '/system/dept/list',
+    '/admin/sys/dept/tree',
   );
 }
 
@@ -51,4 +67,4 @@ async function deleteDept(id: string) {
   return requestClient.delete(`/system/dept/${id}`);
 }
 
-export { createDept, deleteDept, getDeptList, updateDept };
+export { adaptDeptData, createDept, deleteDept, getDeptList, updateDept };

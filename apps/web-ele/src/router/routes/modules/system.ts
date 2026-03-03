@@ -8,6 +8,7 @@ const routes: RouteRecordRaw[] = [
       icon: 'ion:settings-outline',
       order: 9997,
       title: $t('system.title'),
+      authority: 'system:view',
     },
     name: 'System',
     path: '/system',
@@ -18,6 +19,7 @@ const routes: RouteRecordRaw[] = [
         meta: {
           icon: 'mdi:account',
           title: $t('system.user.title'),
+          authority: 'system:user:view',
         },
         component: () => import('#/views/system/user/list.vue'),
       },
@@ -27,6 +29,7 @@ const routes: RouteRecordRaw[] = [
         meta: {
           icon: 'mdi:account-group',
           title: $t('system.role.title'),
+          authority: 'system:role:view',
         },
         component: () => import('#/views/system/role/list.vue'),
       },
@@ -36,6 +39,7 @@ const routes: RouteRecordRaw[] = [
         meta: {
           icon: 'mdi:menu',
           title: $t('system.menu.title'),
+          authority: 'system:menu:view',
         },
         component: () => import('#/views/system/menu/list.vue'),
       },
@@ -45,8 +49,19 @@ const routes: RouteRecordRaw[] = [
         meta: {
           icon: 'charm:organisation',
           title: $t('system.dept.title'),
+          authority: 'system:dept:view',
         },
         component: () => import('#/views/system/dept/list.vue'),
+      },
+      {
+        path: '/system/dict',
+        name: 'SystemDict',
+        meta: {
+          icon: 'mdi:book-alphabet',
+          title: $t('system.dict.title'),
+          authority: 'system:dict:view',
+        },
+        component: () => import('#/views/system/dict/list.vue'),
       },
     ],
   },

@@ -11,7 +11,7 @@ import { Plus } from '@vben/icons';
 import { ElButton, ElMessage } from 'element-plus';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { deleteDept, getDeptList } from '#/api/system/dept';
+import { adaptDeptData, deleteDept, getDeptList } from '#/api/system/dept';
 import { $t } from '#/locales';
 
 import { useColumns } from './data';
@@ -83,7 +83,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
     proxyConfig: {
       ajax: {
         query: async (_params) => {
-          return await getDeptList();
+          const data = await getDeptList();
+          return adaptDeptData(data);
         },
       },
     },

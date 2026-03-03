@@ -11,11 +11,6 @@ export namespace AuthApi {
   export interface LoginResult {
     accessToken: string;
   }
-
-  export interface RefreshTokenResult {
-    data: string;
-    status: number;
-  }
 }
 
 /**
@@ -29,7 +24,8 @@ export async function loginApi(data: AuthApi.LoginParams) {
  * 刷新accessToken
  */
 export async function refreshTokenApi() {
-  return baseRequestClient.post<AuthApi.RefreshTokenResult>('/auth/refresh', {
+  // 返回类型从 RefreshTokenResult 改为 string（token 字符串）
+  return baseRequestClient.post<string>('/auth/refresh', {
     withCredentials: true,
   });
 }

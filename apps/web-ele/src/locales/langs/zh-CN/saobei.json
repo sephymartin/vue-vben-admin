@@ -1,0 +1,59 @@
+{
+  "title": "扫呗管理",
+  "merchant": {
+    "title": "商户管理",
+    "list": "商户列表",
+    "merchantNo": "商户号",
+    "merchantName": "商户名称",
+    "merchantSecret": "商户密钥",
+    "skipSignature": "跳过签名验证",
+    "createdAt": "创建时间",
+    "updatedAt": "更新时间"
+  },
+  "token": {
+    "title": "Token管理",
+    "list": "Token列表",
+    "userId": "用户ID",
+    "nickname": "昵称",
+    "merchantName": "商户名称",
+    "merchantNo": "商户号",
+    "token": "Token",
+    "expiresAt": "过期时间",
+    "expiredStatus": "过期状态",
+    "expired": "已过期",
+    "notExpired": "未过期",
+    "createdAt": "创建时间"
+  },
+  "payment": {
+    "title": "支付订单管理",
+    "list": "支付订单列表",
+    "export": "导出Excel",
+    "orderTitle": "订单标题",
+    "amount": "金额",
+    "merchantOrderNo": "商户订单号",
+    "merchantNo": "商户号",
+    "batchNo": "批次号",
+    "paymentStatus": {
+      "label": "支付状态",
+      "INIT": "初始化",
+      "WAIT_TO_PAY": "待支付",
+      "SUCCESS": "支付成功",
+      "ERROR": "异常",
+      "CANCELLED": "已取消"
+    },
+    "notifyStatus": {
+      "label": "通知状态",
+      "INIT": "初始化",
+      "PROCESSING": "通知中",
+      "SUCCESS": "通知成功",
+      "FAILED": "通知失败"
+    },
+    "notifyCount": "通知次数",
+    "notifyTime": "通知时间",
+    "nextNotifyTime": "下次通知时间",
+    "errorMsg": "异常信息",
+    "beginTime": "开始时间",
+    "endTime": "结束时间",
+    "createdAt": "创建时间"
+  }
+}

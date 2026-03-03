@@ -51,7 +51,8 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
   async function doRefreshToken() {
     const accessStore = useAccessStore();
     const resp = await refreshTokenApi();
-    const newToken = resp.data;
+    // 后端迁移后，resp 直接是 token 字符串，不再有 data 包装
+    const newToken = typeof resp === 'string' ? resp : resp.data;
     accessStore.setAccessToken(newToken);
     return newToken;
   }
@@ -71,12 +72,21 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
     },
   });
 
-  // 处理返回的响应数据格式
+  // 处理返回的响应数据格式 - RFC 7807 ProblemDetail
+  // 成功响应直接返回数据，无包装；HTTP 状态码已在 defaultResponseInterceptor 内部检查
   client.addResponseInterceptor(
     defaultResponseInterceptor({
-      codeField: 'code',
-      dataField: 'data',
-      successCode: 0,
+      codeField: 'status', // 字段名（成功响应中可能不存在，但错误响应 ProblemDetail 中有）
+      dataField: (responseData) => responseData, // 直接返回整个响应体（参数是响应体，不是整个 response 对象）
+      successCode: (code) => {
+        // 成功响应没有 status 字段（code 为 undefined），此时 HTTP 状态码已为 200-399
+        // 错误响应 ProblemDetail 有 status 字段，但 HTTP 状态码已为 400+
+        // 所以如果 code 存在且 >= 400，返回 false；否则返回 true
+        return (
+          code === undefined ||
+          (typeof code === 'number' && code >= 200 && code < 400)
+        );
+      },
     }),
   );
 
@@ -91,14 +101,25 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
     }),
   );
 
-  // 通用的错误处理,如果没有进入上面的错误处理逻辑，就会进入这里
+  // 通用的错误处理 - 支持 RFC 7807 ProblemDetail 格式
   client.addResponseInterceptor(
     errorMessageResponseInterceptor((msg: string, error) => {
-      // 这里可以根据业务进行定制,你可以拿到 error 内的信息进行定制化处理，根据不同的 code 做不同的提示，而不是直接使用 message.error 提示 msg
-      // 当前mock接口返回的错误字段是 error 或者 message
       const responseData = error?.response?.data ?? {};
-      const errorMessage = responseData?.error ?? responseData?.message ?? '';
-      // 如果没有错误信息，则会根据状态码进行提示
+
+      // RFC 7807 ProblemDetail 格式
+      let errorMessage = '';
+      if (responseData.detail) {
+        errorMessage = responseData.detail;
+      } else if (responseData.title) {
+        errorMessage = responseData.title;
+      }
+      // 兼容旧格式（过渡期，可选）
+      else if (responseData.error) {
+        errorMessage = responseData.error;
+      } else if (responseData.message) {
+        errorMessage = responseData.message;
+      }
+
       ElMessage.error(errorMessage || msg);
     }),
   );

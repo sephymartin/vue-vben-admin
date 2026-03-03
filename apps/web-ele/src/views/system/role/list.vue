@@ -13,7 +13,7 @@ import { Plus } from '@vben/icons';
 import { ElButton, ElMessage, ElMessageBox } from 'element-plus';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { deleteRole, getRoleList, updateRole } from '#/api/system/role';
+import { deleteRole, getRoleList, updateRoleStatus } from '#/api/system/role';
 import { $t } from '#/locales';
 
 import { useColumns, useGridFormSchema } from './data';
@@ -73,19 +73,19 @@ function onActionClick(e: OnActionClickParams<SystemRoleApi.SystemRole>) {
 }
 
 async function onStatusChange(
-  newStatus: number,
+  newStatus: string,
   row: SystemRoleApi.SystemRole,
 ) {
   const status: Recordable<string> = {
-    0: '禁用',
-    1: '启用',
+    ENABLED: '启用',
+    DISABLED: '禁用',
   };
   try {
     await ElMessageBox.confirm(
-      `你要将${row.name}的状态切换为 【${status[newStatus.toString()]}】 吗？`,
+      `你要将${row.name}的状态切换为 【${status[newStatus]}】 吗？`,
       '切换状态',
     );
-    await updateRole(row.id, { status: newStatus });
+    await updateRoleStatus({ roleId: row.id, roleStatus: newStatus });
     return true;
   } catch {
     return false;

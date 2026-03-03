@@ -69,6 +69,23 @@ export function useTypeFormSchema(): VbenFormSchema[] {
   ];
 }
 
+// ========== 字典分类搜索表单配置 ==========
+
+export function useTypeGridFormSchema(): VbenFormSchema[] {
+  return [
+    {
+      component: 'Input',
+      fieldName: 'typeCode',
+      label: $t('system.dict.type.typeCode'),
+    },
+    {
+      component: 'Input',
+      fieldName: 'typeName',
+      label: $t('system.dict.type.typeName'),
+    },
+  ];
+}
+
 // ========== 字典分类表格列配置 ==========
 
 export function useTypeColumns(

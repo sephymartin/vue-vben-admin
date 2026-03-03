@@ -3,7 +3,7 @@ import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemUserApi } from '#/api/system/user';
 
 import { z } from '#/adapter/form';
-import { getDeptList } from '#/api/system/dept';
+import { adaptDeptData, getDeptList } from '#/api/system/dept';
 import { getRoleList } from '#/api/system/role';
 import { $t } from '#/locales';
 
@@ -64,6 +64,7 @@ export function useFormSchema(): VbenFormSchema[] {
       componentProps: {
         clearable: true,
         api: getDeptList,
+        afterFetch: adaptDeptData,
         class: 'w-full',
         labelField: 'name',
         valueField: 'id',
@@ -92,11 +93,11 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'RadioGroup',
       componentProps: {
         options: [
-          { label: $t('common.enabled'), value: '1' },
-          { label: $t('common.disabled'), value: '0' },
+          { label: $t('common.enabled'), value: 'ENABLED' },
+          { label: $t('common.disabled'), value: 'DISABLED' },
         ],
       },
-      defaultValue: '1',
+      defaultValue: 'ENABLED',
       fieldName: 'userStatus',
       label: $t('system.user.status'),
     },
@@ -136,8 +137,8 @@ export function useGridFormSchema(): VbenFormSchema[] {
       componentProps: {
         clearable: true,
         options: [
-          { label: $t('common.enabled'), value: '1' },
-          { label: $t('common.disabled'), value: '0' },
+          { label: $t('common.enabled'), value: 'ENABLED' },
+          { label: $t('common.disabled'), value: 'DISABLED' },
         ],
       },
       fieldName: 'userStatus',
@@ -167,7 +168,7 @@ export function useColumns<T = SystemUserApi.SystemUser>(
     {
       field: 'nickname',
       title: $t('system.user.nickname'),
-      width: 120,
+      minWidth: 120,
     },
     {
       field: 'mobile',
@@ -177,20 +178,24 @@ export function useColumns<T = SystemUserApi.SystemUser>(
     {
       field: 'email',
       title: $t('system.user.email'),
-      width: 180,
+      minWidth: 180,
     },
     {
       cellRender: {
         attrs: {
           beforeChange: onStatusChange,
-          checkedValue: '1',
-          uncheckedValue: '0',
+          checkedValue: 'ENABLED',
+          uncheckedValue: 'DISABLED',
         },
         name: onStatusChange ? 'CellSwitch' : 'CellTag',
+        props: {
+          activeText: '',
+          inactiveText: '',
+        },
       },
       field: 'userStatus',
       title: $t('system.user.status'),
-      width: 100,
+      width: 80,
     },
     {
       field: 'createdTime',
@@ -210,7 +215,7 @@ export function useColumns<T = SystemUserApi.SystemUser>(
       field: 'operation',
       fixed: 'right',
       title: $t('system.user.operation'),
-      width: 130,
+      width: 120,
     },
   ];
 }

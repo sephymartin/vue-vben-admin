@@ -76,8 +76,8 @@ async function onStatusChange(
   row: SystemUserApi.SystemUser,
 ) {
   const status: Recordable<string> = {
-    '0': '禁用',
-    '1': '启用',
+    ENABLED: '启用',
+    DISABLED: '禁用',
   };
   try {
     await ElMessageBox.confirm(

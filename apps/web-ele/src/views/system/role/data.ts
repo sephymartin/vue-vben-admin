@@ -16,11 +16,11 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'RadioGroup',
       componentProps: {
         options: [
-          { label: $t('common.enabled'), value: 1 },
-          { label: $t('common.disabled'), value: 0 },
+          { label: $t('common.enabled'), value: 'ENABLED' },
+          { label: $t('common.disabled'), value: 'DISABLED' },
         ],
       },
-      defaultValue: 1,
+      defaultValue: 'ENABLED',
       fieldName: 'status',
       label: $t('system.role.status'),
     },
@@ -50,14 +50,18 @@ export function useGridFormSchema(): VbenFormSchema[] {
       fieldName: 'name',
       label: $t('system.role.roleName'),
     },
-    { component: 'Input', fieldName: 'id', label: $t('system.role.id') },
+    {
+      component: 'Input',
+      fieldName: 'code',
+      label: $t('system.role.roleCode'),
+    },
     {
       component: 'Select',
       componentProps: {
         clearable: true,
         options: [
-          { label: $t('common.enabled'), value: 1 },
-          { label: $t('common.disabled'), value: 0 },
+          { label: $t('common.enabled'), value: 'ENABLED' },
+          { label: $t('common.disabled'), value: 'DISABLED' },
         ],
       },
       fieldName: 'status',
@@ -90,14 +94,22 @@ export function useColumns<T = SystemRoleApi.SystemRole>(
       width: 200,
     },
     {
-      field: 'id',
-      title: $t('system.role.id'),
+      field: 'code',
+      title: $t('system.role.roleCode'),
       width: 200,
     },
     {
       cellRender: {
-        attrs: { beforeChange: onStatusChange },
+        attrs: {
+          beforeChange: onStatusChange,
+          checkedValue: 'ENABLED',
+          uncheckedValue: 'DISABLED',
+        },
         name: onStatusChange ? 'CellSwitch' : 'CellTag',
+        props: {
+          activeText: '',
+          inactiveText: '',
+        },
       },
       field: 'status',
       title: $t('system.role.status'),

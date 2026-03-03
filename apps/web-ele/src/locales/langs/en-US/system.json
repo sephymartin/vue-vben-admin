@@ -73,13 +73,15 @@
     "list": "Role List",
     "name": "Role",
     "roleName": "Role Name",
+    "roleCode": "Role Code",
     "id": "Role ID",
     "status": "Status",
     "remark": "Remark",
     "createTime": "Creation Time",
     "operation": "Operation",
     "permissions": "Permissions",
-    "setPermissions": "Permissions"
+    "setPermissions": "Permissions",
+    "allPermissions": "All Permissions"
   },
   "dict": {
     "title": "Dictionary Management",

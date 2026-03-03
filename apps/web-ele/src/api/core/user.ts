@@ -8,6 +8,7 @@ import { requestClient } from '#/api/request';
 interface BackendUserInfo {
   avatar: string;
   email?: string;
+  permissions?: string[];
   phone?: string;
   realName: string;
   role?: string;
@@ -25,7 +26,7 @@ export async function getUserInfoApi(): Promise<UserInfo> {
     desc: '',
     homePath: '/dashboard',
     realName: data.realName,
-    roles: [],
+    roles: data.permissions || [],
     token: '',
     userId: data.userId,
     username: data.username,

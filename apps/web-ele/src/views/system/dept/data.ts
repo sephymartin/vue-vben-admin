@@ -5,7 +5,7 @@ import type { OnActionClickFn } from '#/adapter/vxe-table';
 import type { SystemDeptApi } from '#/api/system/dept';
 
 import { z } from '#/adapter/form';
-import { getDeptList } from '#/api/system/dept';
+import { adaptDeptData, getDeptList } from '#/api/system/dept';
 import { $t } from '#/locales';
 
 export function useSchema(): VbenFormSchema[] {
@@ -27,6 +27,7 @@ export function useSchema(): VbenFormSchema[] {
       componentProps: {
         clearable: true,
         api: getDeptList,
+        afterFetch: adaptDeptData,
         class: 'w-full',
         labelField: 'name',
         valueField: 'id',
