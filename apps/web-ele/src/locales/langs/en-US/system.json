@@ -15,7 +15,16 @@
     "password": "Password",
     "createTime": "Create Time",
     "operation": "Operation",
-    "remark": "Remark"
+    "remark": "Remark",
+    "actions": {
+      "enable": "Enable",
+      "disable": "Disable"
+    },
+    "messages": {
+      "enableConfirm": "Are you sure to enable user {0}?",
+      "disableConfirm": "Are you sure to disable user {0}?",
+      "processing": "Processing user {0} ..."
+    }
   },
   "dept": {
     "name": "Department",
@@ -27,46 +36,6 @@
     "remark": "Remark",
     "operation": "Operation",
     "parentDept": "Parent Department"
-  },
-  "menu": {
-    "title": "Menu Management",
-    "list": "Menu List",
-    "parent": "Parent Menu",
-    "menuTitle": "Title",
-    "menuName": "Menu Name",
-    "name": "Menu",
-    "type": "Type",
-    "typeCatalog": "Catalog",
-    "typeMenu": "Menu",
-    "typeButton": "Button",
-    "typeLink": "Link",
-    "typeEmbedded": "Embedded",
-    "icon": "Icon",
-    "activeIcon": "Active Icon",
-    "activePath": "Active Path",
-    "path": "Route Path",
-    "component": "Component",
-    "status": "Status",
-    "authCode": "Auth Code",
-    "badge": "Badge",
-    "operation": "Operation",
-    "linkSrc": "Link Address",
-    "affixTab": "Affix In Tabs",
-    "keepAlive": "Keep Alive",
-    "hideInMenu": "Hide In Menu",
-    "hideInTab": "Hide In Tabbar",
-    "hideChildrenInMenu": "Hide Children In Menu",
-    "hideInBreadcrumb": "Hide In Breadcrumb",
-    "advancedSettings": "Other Settings",
-    "activePathMustExist": "The path could not find a valid menu",
-    "activePathHelp": "When jumping to the current route, \nthe menu path that needs to be activated must be specified when it does not display in the navigation menu.",
-    "badgeType": {
-      "title": "Badge Type",
-      "dot": "Dot",
-      "normal": "Text",
-      "none": "None"
-    },
-    "badgeVariants": "Badge Style"
   },
   "role": {
     "title": "Role Management",
@@ -81,7 +50,16 @@
     "operation": "Operation",
     "permissions": "Permissions",
     "setPermissions": "Permissions",
-    "allPermissions": "All Permissions"
+    "allPermissions": "All Permissions",
+    "actions": {
+      "enable": "Enable",
+      "disable": "Disable"
+    },
+    "messages": {
+      "enableConfirm": "Are you sure to enable role {0}?",
+      "disableConfirm": "Are you sure to disable role {0}?",
+      "processing": "Processing role {0} ..."
+    }
   },
   "dict": {
     "title": "Dictionary Management",
