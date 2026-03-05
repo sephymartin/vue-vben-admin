@@ -85,7 +85,7 @@ class PreferenceManager {
     const mergedPreference = merge(
       {},
       overrides,
-      this.loadCachedPreferences() || {},
+      this.loadFromCache() || {},
       this.initialPreferences,
     );
 

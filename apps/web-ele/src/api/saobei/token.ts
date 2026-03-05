@@ -77,11 +77,24 @@ async function getTokenList(params: Recordable<any>) {
 
   // 转换分页结果并映射字段
   const transformed = transformPagingResult({
-    list: res.list.map(mapTokenFromBackend),
+    list: res.list.map((item) => mapTokenFromBackend(item)),
     total: res.total,
   });
 
   return transformed;
 }
 
-export { getTokenList };
+/**
+ * 刷新 token 字符串
+ */
+async function updateTokenString(id: number, tokenString: string) {
+  return requestClient.post(
+    '/admin/saobei/token/updateTokenString',
+    { tokenString },
+    {
+      params: { id },
+    },
+  );
+}
+
+export { getTokenList, updateTokenString };

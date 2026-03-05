@@ -5,10 +5,11 @@ import type {
 } from '#/adapter/vxe-table';
 import type { ScheduleJobApi } from '#/api/system/schedule-job';
 
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 import { Plus } from '@vben/icons';
+import { useUserStore } from '@vben/stores';
 
 import { ElButton, ElMessage, ElMessageBox } from 'element-plus';
 
@@ -22,6 +23,7 @@ import {
 } from '#/api/system/schedule-job';
 import { $t } from '#/locales';
 
+import { resolveScheduleJobAuthorities } from './authority';
 import {
   resolveJobStatusActionState,
   useColumns,
@@ -31,6 +33,11 @@ import Form from './modules/form.vue';
 import LogDrawer from './modules/log-drawer.vue';
 
 const logDrawerRef = ref<InstanceType<typeof LogDrawer>>();
+const userStore = useUserStore();
+const permissions = computed(() => userStore.userInfo?.permissions || []);
+const authorities = computed(() =>
+  resolveScheduleJobAuthorities(permissions.value),
+);
 
 const [FormModal, formModalApi] = useVbenModal({
   connectedComponent: Form,
@@ -43,7 +50,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     submitOnChange: true,
   },
   gridOptions: {
-    columns: useColumns(onActionClick),
+    columns: useColumns(onActionClick, authorities.value),
     height: 'auto',
     keepSource: true,
     proxyConfig: {
@@ -71,6 +78,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
 });
 
 function onCreate() {
+  if (!authorities.value.canAdd) {
+    return;
+  }
   formModalApi.setData(null).open();
 }
 
@@ -146,6 +156,19 @@ function onActionClick({
   code,
   row,
 }: OnActionClickParams<ScheduleJobApi.ScheduleJob>) {
+  if (
+    ['disable', 'enable', 'execute', 'logs'].includes(code) &&
+    !authorities.value.canOperate
+  ) {
+    return;
+  }
+  if (code === 'edit' && !authorities.value.canEdit) {
+    return;
+  }
+  if (code === 'delete' && !authorities.value.canDelete) {
+    return;
+  }
+
   switch (code) {
     case 'delete': {
       onDelete(row);
@@ -190,7 +213,11 @@ function onRefresh() {
 
     <Grid :table-title="$t('system.scheduleJob.list')">
       <template #toolbar-tools>
-        <ElButton type="primary" @click="onCreate">
+        <ElButton
+          v-auth="'system:schedule-job:add'"
+          type="primary"
+          @click="onCreate"
+        >
           <Plus class="size-5" />
           {{ $t('ui.actionTitle.create', [$t('system.scheduleJob.name')]) }}
         </ElButton>

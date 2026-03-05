@@ -1,10 +1,10 @@
 import { describe, expect, it, vi } from 'vitest';
 
+import systemRoutes from '../modules/system';
+
 vi.mock('#/locales', () => ({
   $t: (key: string) => key,
 }));
-
-import systemRoutes from '../modules/system';
 
 describe('system routes', () => {
   it('does not expose menu management route', () => {

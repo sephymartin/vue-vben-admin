@@ -119,7 +119,7 @@
       "processing": "Processing job {0} ..."
     },
     "validation": {
-      "jobParamsHelp": "Enter a JSON object, for example {\"key\":\"value\"}",
+      "jobParamsHelp": "Enter a JSON object, for example ｛\"key\":\"value\"｝",
       "jobParamsInvalidJson": "Job params must be valid JSON",
       "jobParamsMustObject": "Job params must be a JSON object"
     },

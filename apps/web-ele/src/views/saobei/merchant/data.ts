@@ -20,23 +20,23 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 export function useColumns<T = SaobeiMerchantApi.SaobeiMerchant>(
-  onActionClick: OnActionClickFn<T>,
+  _onActionClick: OnActionClickFn<T>,
 ): VxeTableGridOptions['columns'] {
   return [
     {
       field: 'merchantNo',
       title: $t('saobei.merchant.merchantNo'),
-      width: 200,
+      width: 180,
     },
     {
       field: 'merchantName',
       title: $t('saobei.merchant.merchantName'),
-      width: 200,
+      minWidth: 180,
     },
     {
       field: 'merchantSecret',
       title: $t('saobei.merchant.merchantSecret'),
-      width: 200,
+      minWidth: 240,
     },
     {
       cellRender: {
@@ -50,17 +50,17 @@ export function useColumns<T = SaobeiMerchantApi.SaobeiMerchant>(
       },
       field: 'skipSignature',
       title: $t('saobei.merchant.skipSignature'),
-      width: 150,
+      width: 120,
     },
     {
       field: 'createdAt',
       title: $t('saobei.merchant.createdAt'),
-      width: 200,
+      width: 180,
     },
     {
       field: 'updatedAt',
       title: $t('saobei.merchant.updatedAt'),
-      width: 200,
+      width: 180,
     },
   ];
 }

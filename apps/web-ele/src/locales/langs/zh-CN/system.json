@@ -119,7 +119,7 @@
       "processing": "正在处理任务 {0} ..."
     },
     "validation": {
-      "jobParamsHelp": "请输入 JSON 对象，例如 {\"key\":\"value\"}",
+      "jobParamsHelp": "请输入 JSON 对象，例如 ｛\"key\":\"value\"｝",
       "jobParamsInvalidJson": "任务参数必须是合法 JSON",
       "jobParamsMustObject": "任务参数必须是 JSON 对象"
     },

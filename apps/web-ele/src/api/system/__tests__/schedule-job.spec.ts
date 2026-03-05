@@ -72,27 +72,19 @@ describe('schedule-job api', () => {
       jobParams: { retry: 3 },
     });
 
-    expect(postMock).toHaveBeenNthCalledWith(
-      1,
-      '/admin/schedule/job/create',
-      {
-        beanName: 'beanA',
-        cronExpression: '0/10 * * * * ?',
-        jobName: 'jobA',
-        jobParams: { foo: 'bar' },
-        jobStatus: 'ENABLED',
-      },
-    );
+    expect(postMock).toHaveBeenNthCalledWith(1, '/admin/schedule/job/create', {
+      beanName: 'beanA',
+      cronExpression: '0/10 * * * * ?',
+      jobName: 'jobA',
+      jobParams: { foo: 'bar' },
+      jobStatus: 'ENABLED',
+    });
 
-    expect(postMock).toHaveBeenNthCalledWith(
-      2,
-      '/admin/schedule/job/update',
-      {
-        id: 8,
-        cronExpression: '0/30 * * * * ?',
-        jobParams: { retry: 3 },
-      },
-    );
+    expect(postMock).toHaveBeenNthCalledWith(2, '/admin/schedule/job/update', {
+      id: 8,
+      cronExpression: '0/30 * * * * ?',
+      jobParams: { retry: 3 },
+    });
   });
 
   it('sends id as params for delete enable disable and execute', async () => {

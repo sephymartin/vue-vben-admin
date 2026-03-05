@@ -13,6 +13,7 @@
   "token": {
     "title": "Token管理",
     "list": "Token列表",
+    "operation": "操作",
     "userId": "用户ID",
     "nickname": "昵称",
     "merchantName": "商户名称",
@@ -22,7 +23,18 @@
     "expiredStatus": "过期状态",
     "expired": "已过期",
     "notExpired": "未过期",
-    "createdAt": "创建时间"
+    "createdAt": "创建时间",
+    "actions": {
+      "refreshToken": "刷新Token"
+    },
+    "messages": {
+      "inputTokenTitle": "刷新Token",
+      "inputTokenPrompt": "请为商户 {0} 粘贴新的 Token",
+      "inputTokenPlaceholder": "请粘贴完整 Token 文本",
+      "inputTokenRequired": "Token 不能为空",
+      "processing": "正在刷新商户 {0} 的 Token ...",
+      "refreshSuccess": "商户 {0} Token 刷新成功"
+    }
   },
   "payment": {
     "title": "支付订单管理",

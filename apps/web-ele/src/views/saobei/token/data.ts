@@ -43,27 +43,27 @@ export function useColumns<T = SaobeiTokenApi.SaobeiToken>(
     {
       field: 'nickname',
       title: $t('saobei.token.nickname'),
-      width: 150,
+      minWidth: 140,
     },
     {
       field: 'merchantName',
       title: $t('saobei.token.merchantName'),
-      width: 200,
+      minWidth: 180,
     },
     {
       field: 'merchantNo',
       title: $t('saobei.token.merchantNo'),
-      width: 200,
+      width: 180,
     },
     {
       field: 'token',
       title: $t('saobei.token.token'),
-      width: 250,
+      minWidth: 240,
     },
     {
       field: 'expiresAt',
       title: $t('saobei.token.expiresAt'),
-      width: 200,
+      width: 180,
     },
     {
       cellRender: {
@@ -82,7 +82,28 @@ export function useColumns<T = SaobeiTokenApi.SaobeiToken>(
     {
       field: 'createdAt',
       title: $t('saobei.token.createdAt'),
-      width: 200,
+      width: 180,
+    },
+    {
+      align: 'center',
+      cellRender: {
+        attrs: {
+          nameField: 'merchantNo',
+          nameTitle: $t('saobei.token.merchantNo'),
+          onClick: onActionClick,
+        },
+        name: 'CellOperation',
+        options: [
+          {
+            code: 'refreshToken',
+            text: $t('saobei.token.actions.refreshToken'),
+          },
+        ],
+      },
+      field: 'operation',
+      fixed: 'right',
+      title: $t('saobei.token.operation'),
+      width: 140,
     },
   ];
 }
