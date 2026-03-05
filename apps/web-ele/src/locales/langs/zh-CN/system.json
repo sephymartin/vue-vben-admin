@@ -108,5 +108,64 @@
       "enabled": "状态",
       "operation": "操作"
     }
+  },
+  "scheduleJob": {
+    "title": "定时任务管理",
+    "list": "定时任务列表",
+    "name": "定时任务",
+    "fields": {
+      "jobName": "任务名称",
+      "jobDescription": "任务描述",
+      "beanName": "Bean 名称",
+      "cronExpression": "Cron 表达式",
+      "jobParams": "任务参数(JSON)",
+      "jobStatus": "任务状态",
+      "nextExecuteTime": "下次执行时间",
+      "lastExecuteTime": "最后执行时间",
+      "operation": "操作"
+    },
+    "status": {
+      "enabled": "启用",
+      "disabled": "禁用"
+    },
+    "actions": {
+      "enable": "启用",
+      "disable": "禁用",
+      "executeNow": "立即执行",
+      "logs": "日志"
+    },
+    "messages": {
+      "enableConfirm": "确认启用任务 {0} 吗？",
+      "disableConfirm": "确认禁用任务 {0} 吗？",
+      "executeConfirm": "确认立即执行任务 {0} 吗？",
+      "processing": "正在处理任务 {0} ..."
+    },
+    "validation": {
+      "jobParamsHelp": "请输入 JSON 对象，例如 {\"key\":\"value\"}",
+      "jobParamsInvalidJson": "任务参数必须是合法 JSON",
+      "jobParamsMustObject": "任务参数必须是 JSON 对象"
+    },
+    "log": {
+      "list": "执行日志",
+      "name": "日志详情",
+      "fields": {
+        "executeTime": "执行时间",
+        "finishTime": "完成时间",
+        "durationMs": "耗时(毫秒)",
+        "executeStatus": "执行状态",
+        "executeResult": "执行结果",
+        "errorMessage": "错误信息"
+      },
+      "actions": {
+        "detail": "详情",
+        "viewResult": "查看结果",
+        "viewError": "查看错误"
+      },
+      "executeStatus": {
+        "running": "执行中",
+        "success": "成功",
+        "failed": "失败"
+      }
+    }
   }
 }

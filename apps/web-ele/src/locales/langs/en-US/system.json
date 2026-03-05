@@ -108,5 +108,64 @@
       "enabled": "Status",
       "operation": "Operation"
     }
+  },
+  "scheduleJob": {
+    "title": "Schedule Job Management",
+    "list": "Schedule Job List",
+    "name": "Schedule Job",
+    "fields": {
+      "jobName": "Job Name",
+      "jobDescription": "Job Description",
+      "beanName": "Bean Name",
+      "cronExpression": "Cron Expression",
+      "jobParams": "Job Params(JSON)",
+      "jobStatus": "Job Status",
+      "nextExecuteTime": "Next Execute Time",
+      "lastExecuteTime": "Last Execute Time",
+      "operation": "Operation"
+    },
+    "status": {
+      "enabled": "Enabled",
+      "disabled": "Disabled"
+    },
+    "actions": {
+      "enable": "Enable",
+      "disable": "Disable",
+      "executeNow": "Execute Now",
+      "logs": "Logs"
+    },
+    "messages": {
+      "enableConfirm": "Are you sure to enable job {0}?",
+      "disableConfirm": "Are you sure to disable job {0}?",
+      "executeConfirm": "Are you sure to execute job {0} now?",
+      "processing": "Processing job {0} ..."
+    },
+    "validation": {
+      "jobParamsHelp": "Enter a JSON object, for example {\"key\":\"value\"}",
+      "jobParamsInvalidJson": "Job params must be valid JSON",
+      "jobParamsMustObject": "Job params must be a JSON object"
+    },
+    "log": {
+      "list": "Execution Logs",
+      "name": "Log Detail",
+      "fields": {
+        "executeTime": "Execute Time",
+        "finishTime": "Finish Time",
+        "durationMs": "Duration(ms)",
+        "executeStatus": "Execute Status",
+        "executeResult": "Execute Result",
+        "errorMessage": "Error Message"
+      },
+      "actions": {
+        "detail": "Detail",
+        "viewResult": "View Result",
+        "viewError": "View Error"
+      },
+      "executeStatus": {
+        "running": "Running",
+        "success": "Success",
+        "failed": "Failed"
+      }
+    }
   }
 }

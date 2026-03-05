@@ -63,6 +63,16 @@ const routes: RouteRecordRaw[] = [
         },
         component: () => import('#/views/system/dict/list.vue'),
       },
+      {
+        path: '/system/schedule-job',
+        name: 'SystemScheduleJob',
+        meta: {
+          icon: 'mdi:calendar-clock-outline',
+          title: $t('system.scheduleJob.title'),
+          authority: 'system:schedule-job:view',
+        },
+        component: () => import('#/views/system/schedule-job/list.vue'),
+      },
     ],
   },
 ];
