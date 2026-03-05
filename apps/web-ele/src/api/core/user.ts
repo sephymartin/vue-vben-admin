@@ -21,12 +21,14 @@ interface BackendUserInfo {
  */
 export async function getUserInfoApi(): Promise<UserInfo> {
   const data = await requestClient.get<BackendUserInfo>('/admin/user/info');
+  const permissions = data.permissions || [];
   return {
     avatar: data.avatar || '',
     desc: '',
     homePath: '/dashboard',
+    permissions,
     realName: data.realName,
-    roles: data.permissions || [],
+    roles: permissions,
     token: '',
     userId: data.userId,
     username: data.username,
