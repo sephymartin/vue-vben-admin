@@ -55,9 +55,8 @@ describe('schedule-job api', () => {
   it('serializes jobParams payload for create and update', async () => {
     postMock.mockResolvedValue(undefined);
 
-    const { createScheduleJob, updateScheduleJob } = await import(
-      '../schedule-job'
-    );
+    const { createScheduleJob, updateScheduleJob } =
+      await import('../schedule-job');
 
     await createScheduleJob({
       beanName: 'beanA',
@@ -73,19 +72,27 @@ describe('schedule-job api', () => {
       jobParams: { retry: 3 },
     });
 
-    expect(postMock).toHaveBeenNthCalledWith(1, '/admin-api/schedule/job/create', {
-      beanName: 'beanA',
-      cronExpression: '0/10 * * * * ?',
-      jobName: 'jobA',
-      jobParams: { foo: 'bar' },
-      jobStatus: 'ENABLED',
-    });
+    expect(postMock).toHaveBeenNthCalledWith(
+      1,
+      '/admin-api/schedule/job/create',
+      {
+        beanName: 'beanA',
+        cronExpression: '0/10 * * * * ?',
+        jobName: 'jobA',
+        jobParams: { foo: 'bar' },
+        jobStatus: 'ENABLED',
+      },
+    );
 
-    expect(postMock).toHaveBeenNthCalledWith(2, '/admin-api/schedule/job/update', {
-      id: 8,
-      cronExpression: '0/30 * * * * ?',
-      jobParams: { retry: 3 },
-    });
+    expect(postMock).toHaveBeenNthCalledWith(
+      2,
+      '/admin-api/schedule/job/update',
+      {
+        id: 8,
+        cronExpression: '0/30 * * * * ?',
+        jobParams: { retry: 3 },
+      },
+    );
   });
 
   it('sends id as params for delete enable disable and execute', async () => {
