@@ -24,6 +24,10 @@ import {
 import { $t } from '#/locales';
 
 import { useVbenForm } from './form';
+import {
+  buildOperationPopconfirmSlots,
+  normalizeOperationButtonOption,
+} from './vxe-table-operation';
 
 setupVbenVxeTable({
   configVxeTable: (vxeUI) => {
@@ -223,11 +227,12 @@ setupVbenVxeTable({
           .filter((opt) => opt.show !== false);
 
         function renderBtn(opt: Recordable<any>, listen = true) {
+          const { buttonProps, label } = normalizeOperationButtonOption(opt);
           return h(
             ElButton,
             {
               ...props,
-              ...opt,
+              ...buttonProps,
               onClick: listen
                 ? () =>
                     attrs?.onClick?.({
@@ -244,7 +249,7 @@ setupVbenVxeTable({
                     h(IconifyIcon, { class: 'size-5', icon: opt.icon }),
                   );
                 }
-                content.push(opt.text);
+                content.push(label);
                 return content;
               },
             },
@@ -267,9 +272,7 @@ setupVbenVxeTable({
                 });
               },
             },
-            {
-              default: () => renderBtn({ ...opt }, false),
-            },
+            buildOperationPopconfirmSlots(() => renderBtn({ ...opt }, false)),
           );
         }
 
