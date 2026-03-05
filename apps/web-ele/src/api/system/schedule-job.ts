@@ -83,7 +83,7 @@ async function queryScheduleJobs(
   const { pageNum, pageSize, ...query } = params;
   const res = await requestClient.post<
     BackendPagingResult<ScheduleJobApi.ScheduleJob>
-  >('/admin-api/schedule/job/list', query, {
+  >('/admin/schedule/job/list', query, {
     params: { pageNum, pageSize },
   });
   return transformPagingResult(res);
@@ -91,7 +91,7 @@ async function queryScheduleJobs(
 
 async function getScheduleJob(id: number) {
   return requestClient.get<ScheduleJobApi.ScheduleJob>(
-    `/admin-api/schedule/job/${id}`,
+    `/admin/schedule/job/${id}`,
   );
 }
 
@@ -101,7 +101,7 @@ async function queryScheduleJobLogs(
   const { jobId, pageNum, pageSize } = params;
   const res = await requestClient.post<
     BackendPagingResult<ScheduleJobApi.ScheduleJobLog>
-  >('/admin-api/schedule/job/log/list', null, {
+  >('/admin/schedule/job/log/list', null, {
     params: {
       jobId,
       pageNum,
@@ -112,39 +112,39 @@ async function queryScheduleJobLogs(
 }
 
 async function createScheduleJob(data: ScheduleJobApi.CreateScheduleJobParams) {
-  return requestClient.post('/admin-api/schedule/job/create', {
+  return requestClient.post('/admin/schedule/job/create', {
     ...data,
     jobParams: toJobParamsObject(data.jobParams),
   });
 }
 
 async function updateScheduleJob(data: ScheduleJobApi.UpdateScheduleJobParams) {
-  return requestClient.post('/admin-api/schedule/job/update', {
+  return requestClient.post('/admin/schedule/job/update', {
     ...data,
     jobParams: toJobParamsObject(data.jobParams),
   });
 }
 
 async function deleteScheduleJob(id: number) {
-  return requestClient.post('/admin-api/schedule/job/delete', null, {
+  return requestClient.post('/admin/schedule/job/delete', null, {
     params: { id },
   });
 }
 
 async function enableScheduleJob(id: number) {
-  return requestClient.post('/admin-api/schedule/job/enable', null, {
+  return requestClient.post('/admin/schedule/job/enable', null, {
     params: { id },
   });
 }
 
 async function disableScheduleJob(id: number) {
-  return requestClient.post('/admin-api/schedule/job/disable', null, {
+  return requestClient.post('/admin/schedule/job/disable', null, {
     params: { id },
   });
 }
 
 async function executeScheduleJob(id: number) {
-  return requestClient.post('/admin-api/schedule/job/execute', null, {
+  return requestClient.post('/admin/schedule/job/execute', null, {
     params: { id },
   });
 }

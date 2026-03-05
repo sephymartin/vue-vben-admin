@@ -33,7 +33,7 @@ describe('schedule-job api', () => {
     });
 
     expect(postMock).toHaveBeenCalledWith(
-      '/admin-api/schedule/job/list',
+      '/admin/schedule/job/list',
       {
         beanName: 'syncTask',
         jobName: 'sync-user',
@@ -74,7 +74,7 @@ describe('schedule-job api', () => {
 
     expect(postMock).toHaveBeenNthCalledWith(
       1,
-      '/admin-api/schedule/job/create',
+      '/admin/schedule/job/create',
       {
         beanName: 'beanA',
         cronExpression: '0/10 * * * * ?',
@@ -86,7 +86,7 @@ describe('schedule-job api', () => {
 
     expect(postMock).toHaveBeenNthCalledWith(
       2,
-      '/admin-api/schedule/job/update',
+      '/admin/schedule/job/update',
       {
         id: 8,
         cronExpression: '0/30 * * * * ?',
@@ -110,25 +110,25 @@ describe('schedule-job api', () => {
 
     expect(postMock).toHaveBeenNthCalledWith(
       1,
-      '/admin-api/schedule/job/delete',
+      '/admin/schedule/job/delete',
       null,
       { params: { id: 1 } },
     );
     expect(postMock).toHaveBeenNthCalledWith(
       2,
-      '/admin-api/schedule/job/enable',
+      '/admin/schedule/job/enable',
       null,
       { params: { id: 2 } },
     );
     expect(postMock).toHaveBeenNthCalledWith(
       3,
-      '/admin-api/schedule/job/disable',
+      '/admin/schedule/job/disable',
       null,
       { params: { id: 3 } },
     );
     expect(postMock).toHaveBeenNthCalledWith(
       4,
-      '/admin-api/schedule/job/execute',
+      '/admin/schedule/job/execute',
       null,
       { params: { id: 4 } },
     );
@@ -149,7 +149,7 @@ describe('schedule-job api', () => {
     });
 
     expect(postMock).toHaveBeenCalledWith(
-      '/admin-api/schedule/job/log/list',
+      '/admin/schedule/job/log/list',
       null,
       {
         params: {
