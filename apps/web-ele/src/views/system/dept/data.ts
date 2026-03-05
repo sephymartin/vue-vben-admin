@@ -6,7 +6,17 @@ import type { SystemDeptApi } from '#/api/system/dept';
 
 import { z } from '#/adapter/form';
 import { adaptDeptData, getDeptList } from '#/api/system/dept';
+import { buildEnabledDisabledTagOptions } from '#/constants/system-status';
 import { $t } from '#/locales';
+
+function getDeptStatusOptions() {
+  return buildEnabledDisabledTagOptions(
+    1,
+    0,
+    $t('common.enabled'),
+    $t('common.disabled'),
+  );
+}
 
 export function useSchema(): VbenFormSchema[] {
   return [
@@ -39,10 +49,10 @@ export function useSchema(): VbenFormSchema[] {
     {
       component: 'RadioGroup',
       componentProps: {
-        options: [
-          { label: $t('common.enabled'), value: 1 },
-          { label: $t('common.disabled'), value: 0 },
-        ],
+        options: getDeptStatusOptions().map((item) => ({
+          label: item.label,
+          value: item.value,
+        })),
       },
       defaultValue: 1,
       fieldName: 'status',
@@ -79,7 +89,10 @@ export function useColumns(
       width: 150,
     },
     {
-      cellRender: { name: 'CellTag' },
+      cellRender: {
+        name: 'CellTag',
+        options: getDeptStatusOptions(),
+      },
       field: 'status',
       title: $t('system.dept.status'),
       width: 100,

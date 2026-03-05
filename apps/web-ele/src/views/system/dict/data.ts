@@ -3,7 +3,17 @@ import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { DictApi } from '#/api/system/dict';
 
 import { z } from '#/adapter/form';
+import { buildEnabledDisabledTagOptions } from '#/constants/system-status';
 import { $t } from '#/locales';
+
+function getBooleanEnabledOptions() {
+  return buildEnabledDisabledTagOptions(
+    true,
+    false,
+    $t('common.enabled'),
+    $t('common.disabled'),
+  );
+}
 
 // ========== 字典分类表单配置 ==========
 
@@ -46,10 +56,10 @@ export function useTypeFormSchema(): VbenFormSchema[] {
     {
       component: 'RadioGroup',
       componentProps: {
-        options: [
-          { label: $t('common.enabled'), value: true },
-          { label: $t('common.disabled'), value: false },
-        ],
+        options: getBooleanEnabledOptions().map((item) => ({
+          label: item.label,
+          value: item.value,
+        })),
       },
       defaultValue: true,
       fieldName: 'enabled',
@@ -108,7 +118,10 @@ export function useTypeColumns(
       width: 80,
     },
     {
-      cellRender: { name: 'CellTag' },
+      cellRender: {
+        name: 'CellTag',
+        options: getBooleanEnabledOptions(),
+      },
       field: 'enabled',
       title: $t('system.dict.type.enabled'),
       width: 80,
@@ -185,10 +198,10 @@ export function useItemFormSchema(): VbenFormSchema[] {
     {
       component: 'RadioGroup',
       componentProps: {
-        options: [
-          { label: $t('common.enabled'), value: true },
-          { label: $t('common.disabled'), value: false },
-        ],
+        options: getBooleanEnabledOptions().map((item) => ({
+          label: item.label,
+          value: item.value,
+        })),
       },
       defaultValue: true,
       fieldName: 'enabled',
@@ -246,6 +259,7 @@ export function useItemColumns(
           uncheckedValue: false,
         },
         name: onStatusChange ? 'CellSwitch' : 'CellTag',
+        options: onStatusChange ? undefined : getBooleanEnabledOptions(),
       },
       field: 'enabled',
       title: $t('system.dict.item.enabled'),

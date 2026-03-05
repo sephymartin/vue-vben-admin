@@ -2,7 +2,21 @@ import type { VbenFormSchema } from '#/adapter/form';
 import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemRoleApi } from '#/api/system/role';
 
+import {
+  buildEnabledDisabledTagOptions,
+  resolveSystemStatusActionState,
+  SYSTEM_STATUS,
+} from '#/constants/system-status';
 import { $t } from '#/locales';
+
+function getRoleStatusOptions() {
+  return buildEnabledDisabledTagOptions(
+    SYSTEM_STATUS.ENABLED,
+    SYSTEM_STATUS.DISABLED,
+    $t('common.enabled'),
+    $t('common.disabled'),
+  );
+}
 
 export function useFormSchema(): VbenFormSchema[] {
   return [
@@ -15,12 +29,12 @@ export function useFormSchema(): VbenFormSchema[] {
     {
       component: 'RadioGroup',
       componentProps: {
-        options: [
-          { label: $t('common.enabled'), value: 'ENABLED' },
-          { label: $t('common.disabled'), value: 'DISABLED' },
-        ],
+        options: getRoleStatusOptions().map((item) => ({
+          label: item.label,
+          value: item.value,
+        })),
       },
-      defaultValue: 'ENABLED',
+      defaultValue: SYSTEM_STATUS.ENABLED,
       fieldName: 'status',
       label: $t('system.role.status'),
     },
@@ -59,10 +73,10 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         clearable: true,
-        options: [
-          { label: $t('common.enabled'), value: 'ENABLED' },
-          { label: $t('common.disabled'), value: 'DISABLED' },
-        ],
+        options: getRoleStatusOptions().map((item) => ({
+          label: item.label,
+          value: item.value,
+        })),
       },
       fieldName: 'status',
       label: $t('system.role.status'),
@@ -85,7 +99,6 @@ export function useGridFormSchema(): VbenFormSchema[] {
 
 export function useColumns<T = SystemRoleApi.SystemRole>(
   onActionClick: OnActionClickFn<T>,
-  onStatusChange?: (newStatus: any, row: T) => PromiseLike<boolean | undefined>,
 ): VxeTableGridOptions['columns'] {
   return [
     {
@@ -100,16 +113,8 @@ export function useColumns<T = SystemRoleApi.SystemRole>(
     },
     {
       cellRender: {
-        attrs: {
-          beforeChange: onStatusChange,
-          checkedValue: 'ENABLED',
-          uncheckedValue: 'DISABLED',
-        },
-        name: onStatusChange ? 'CellSwitch' : 'CellTag',
-        props: {
-          activeText: '',
-          inactiveText: '',
-        },
+        name: 'CellTag',
+        options: getRoleStatusOptions(),
       },
       field: 'status',
       title: $t('system.role.status'),
@@ -134,11 +139,27 @@ export function useColumns<T = SystemRoleApi.SystemRole>(
           onClick: onActionClick,
         },
         name: 'CellOperation',
+        options: [
+          {
+            code: 'disable',
+            disabled: (row: SystemRoleApi.SystemRole) =>
+              !resolveSystemStatusActionState(row.status).canDisable,
+            text: $t('system.role.actions.disable'),
+          },
+          {
+            code: 'enable',
+            disabled: (row: SystemRoleApi.SystemRole) =>
+              !resolveSystemStatusActionState(row.status).canEnable,
+            text: $t('system.role.actions.enable'),
+          },
+          'edit',
+          'delete',
+        ],
       },
       field: 'operation',
       fixed: 'right',
       title: $t('system.role.operation'),
-      width: 130,
+      width: 240,
     },
   ];
 }

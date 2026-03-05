@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import type { Recordable } from '@vben/types';
-
 import type {
   OnActionClickParams,
   VxeTableGridOptions,
@@ -14,6 +12,10 @@ import { ElButton, ElMessage, ElMessageBox } from 'element-plus';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteUser, getUserList, updateUserStatus } from '#/api/system/user';
+import {
+  resolveSystemStatusActionState,
+  SYSTEM_STATUS,
+} from '#/constants/system-status';
 import { $t } from '#/locales';
 
 import { useColumns, useGridFormSchema } from './data';
@@ -31,7 +33,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     submitOnChange: true,
   },
   gridOptions: {
-    columns: useColumns(onActionClick, onStatusChange),
+    columns: useColumns(onActionClick),
     height: 'auto',
     keepSource: true,
     proxyConfig: {
@@ -64,31 +66,75 @@ function onActionClick(e: OnActionClickParams<SystemUserApi.SystemUser>) {
       onDelete(e.row);
       break;
     }
+    case 'disable': {
+      if (resolveSystemStatusActionState(e.row.userStatus).canDisable) {
+        onDisable(e.row);
+      }
+      break;
+    }
     case 'edit': {
       onEdit(e.row);
+      break;
+    }
+    case 'enable': {
+      if (resolveSystemStatusActionState(e.row.userStatus).canEnable) {
+        onEnable(e.row);
+      }
       break;
     }
   }
 }
 
-async function onStatusChange(
-  newStatus: string,
-  row: SystemUserApi.SystemUser,
+async function withConfirmAction(
+  name: string,
+  action: () => Promise<unknown>,
+  message: string,
 ) {
-  const status: Recordable<string> = {
-    ENABLED: '启用',
-    DISABLED: '禁用',
-  };
   try {
-    await ElMessageBox.confirm(
-      `你要将${row.username}的状态切换为 【${status[newStatus]}】 吗？`,
-      '切换状态',
-    );
-    await updateUserStatus({ userId: row.id, userStatus: newStatus });
-    return true;
+    await ElMessageBox.confirm(message, $t('common.warning'), {
+      type: 'warning',
+    });
+
+    const loading = ElMessage({
+      duration: 0,
+      message: $t('system.user.messages.processing', [name]),
+      type: 'info',
+    });
+
+    try {
+      await action();
+      loading.close();
+      onRefresh();
+    } catch {
+      loading.close();
+    }
   } catch {
-    return false;
+    // user cancelled
   }
+}
+
+async function onEnable(row: SystemUserApi.SystemUser) {
+  await withConfirmAction(
+    row.username,
+    () =>
+      updateUserStatus({
+        userId: row.id,
+        userStatus: SYSTEM_STATUS.ENABLED,
+      }),
+    $t('system.user.messages.enableConfirm', [row.username]),
+  );
+}
+
+async function onDisable(row: SystemUserApi.SystemUser) {
+  await withConfirmAction(
+    row.username,
+    () =>
+      updateUserStatus({
+        userId: row.id,
+        userStatus: SYSTEM_STATUS.DISABLED,
+      }),
+    $t('system.user.messages.disableConfirm', [row.username]),
+  );
 }
 
 function onEdit(row: SystemUserApi.SystemUser) {

@@ -1,10 +1,17 @@
+import type { ScheduleJobActionAuthorities } from './authority';
+
 import type { VbenFormSchema } from '#/adapter/form';
 import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { ScheduleJobApi } from '#/api/system/schedule-job';
 
 import { z } from '#/adapter/form';
+import {
+  buildEnabledDisabledTagOptions,
+  SYSTEM_STATUS,
+} from '#/constants/system-status';
 import { $t } from '#/locales';
 
+import { buildScheduleJobOperationCodes } from './authority';
 import { parseJobParamsText, resolveJobStatusActionState } from './helpers';
 
 export {
@@ -14,18 +21,12 @@ export {
 } from './helpers';
 
 export function getJobStatusOptions() {
-  return [
-    {
-      color: 'success',
-      label: $t('system.scheduleJob.status.enabled'),
-      value: 'ENABLED',
-    },
-    {
-      color: 'default',
-      label: $t('system.scheduleJob.status.disabled'),
-      value: 'DISABLED',
-    },
-  ];
+  return buildEnabledDisabledTagOptions(
+    SYSTEM_STATUS.ENABLED,
+    SYSTEM_STATUS.DISABLED,
+    $t('system.scheduleJob.status.enabled'),
+    $t('system.scheduleJob.status.disabled'),
+  );
 }
 
 export function getLogStatusOptions() {
@@ -152,7 +153,7 @@ export function useFormSchema(): VbenFormSchema[] {
           value: item.value,
         })),
       }),
-      defaultValue: 'ENABLED',
+      defaultValue: SYSTEM_STATUS.ENABLED,
       fieldName: 'jobStatus',
       label: $t('system.scheduleJob.fields.jobStatus'),
     },
@@ -189,7 +190,48 @@ export function useFormSchema(): VbenFormSchema[] {
 
 export function useColumns(
   onActionClick?: OnActionClickFn<ScheduleJobApi.ScheduleJob>,
+  authorities: Pick<
+    ScheduleJobActionAuthorities,
+    'canDelete' | 'canEdit' | 'canOperate'
+  > = defaultActionAuthorities,
 ): VxeTableGridOptions<ScheduleJobApi.ScheduleJob>['columns'] {
+  const operationCodes = buildScheduleJobOperationCodes(authorities);
+  const operationOptions = operationCodes.map((code) => {
+    switch (code) {
+      case 'disable': {
+        return {
+          code: 'disable',
+          disabled: (row: ScheduleJobApi.ScheduleJob) =>
+            !resolveJobStatusActionState(row.jobStatus).canDisable,
+          text: $t('system.scheduleJob.actions.disable'),
+        };
+      }
+      case 'enable': {
+        return {
+          code: 'enable',
+          disabled: (row: ScheduleJobApi.ScheduleJob) =>
+            !resolveJobStatusActionState(row.jobStatus).canEnable,
+          text: $t('system.scheduleJob.actions.enable'),
+        };
+      }
+      case 'execute': {
+        return {
+          code: 'execute',
+          text: $t('system.scheduleJob.actions.executeNow'),
+        };
+      }
+      case 'logs': {
+        return {
+          code: 'logs',
+          text: $t('system.scheduleJob.actions.logs'),
+        };
+      }
+      default: {
+        return code;
+      }
+    }
+  });
+
   return [
     {
       field: 'jobName',
@@ -234,30 +276,7 @@ export function useColumns(
           onClick: onActionClick,
         },
         name: 'CellOperation',
-        options: [
-          {
-            code: 'logs',
-            text: $t('system.scheduleJob.actions.logs'),
-          },
-          {
-            code: 'execute',
-            text: $t('system.scheduleJob.actions.executeNow'),
-          },
-          'edit',
-          {
-            code: 'enable',
-            disabled: (row: ScheduleJobApi.ScheduleJob) =>
-              !resolveJobStatusActionState(row.jobStatus).canEnable,
-            text: $t('system.scheduleJob.actions.enable'),
-          },
-          {
-            code: 'disable',
-            disabled: (row: ScheduleJobApi.ScheduleJob) =>
-              !resolveJobStatusActionState(row.jobStatus).canDisable,
-            text: $t('system.scheduleJob.actions.disable'),
-          },
-          'delete',
-        ],
+        options: operationOptions,
       },
       field: 'operation',
       fixed: 'right',
@@ -266,6 +285,12 @@ export function useColumns(
     },
   ];
 }
+
+const defaultActionAuthorities = {
+  canDelete: true,
+  canEdit: true,
+  canOperate: true,
+};
 
 export function useLogColumns(
   onActionClick?: OnActionClickFn<ScheduleJobApi.ScheduleJobLog>,

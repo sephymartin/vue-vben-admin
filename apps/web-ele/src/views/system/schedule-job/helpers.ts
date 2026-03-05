@@ -1,3 +1,7 @@
+import {
+  normalizeSystemStatus,
+  resolveSystemStatusActionState,
+} from '#/constants/system-status';
 import { $t } from '#/locales';
 
 export type KnownJobStatus = 'DISABLED' | 'ENABLED';
@@ -5,19 +9,11 @@ export type KnownJobStatus = 'DISABLED' | 'ENABLED';
 export function normalizeJobStatus(
   status?: string,
 ): 'UNKNOWN' | KnownJobStatus {
-  const normalized = status?.toUpperCase();
-  if (normalized === 'ENABLED' || normalized === 'DISABLED') {
-    return normalized;
-  }
-  return 'UNKNOWN';
+  return normalizeSystemStatus(status);
 }
 
 export function resolveJobStatusActionState(status?: string) {
-  const normalizedStatus = normalizeJobStatus(status);
-  return {
-    canDisable: normalizedStatus === 'ENABLED',
-    canEnable: normalizedStatus === 'DISABLED',
-  };
+  return resolveSystemStatusActionState(status);
 }
 
 export function parseJobParamsText(text?: string): {

@@ -10,6 +10,7 @@ import {
   createScheduleJob,
   updateScheduleJob,
 } from '#/api/system/schedule-job';
+import { SYSTEM_STATUS } from '#/constants/system-status';
 import { $t } from '#/locales';
 
 import {
@@ -84,7 +85,7 @@ const [Modal, modalApi] = useVbenModal({
       id.value = undefined;
       formData.value = undefined;
       await formApi.setValues({
-        jobStatus: 'ENABLED',
+        jobStatus: SYSTEM_STATUS.ENABLED,
       });
     }
   },

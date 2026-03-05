@@ -4,6 +4,7 @@ import type { BackendPagingResult } from '#/api/types';
 
 import { requestClient } from '#/api/request';
 import { transformPagingResult } from '#/api/types';
+import { normalizeSystemStatus } from '#/constants/system-status';
 
 /**
  * 后端返回的角色 DTO
@@ -51,18 +52,9 @@ export namespace SystemRoleApi {
  * 将后端角色 DTO 转换为前端格式
  */
 function mapRoleFromBackend(backendRole: SysRoleDTO): SystemRoleApi.SystemRole {
-  // roleStatus 转换：支持 "ENABLED"/"DISABLED" 或字典值
-  // 如果后端返回的是字典值（如 "0"/"1"），转换为 "ENABLED"/"DISABLED"
-  let status: string;
-  const roleStatusUpper = backendRole.roleStatus.toUpperCase();
-  if (roleStatusUpper === 'ENABLED' || roleStatusUpper === '1') {
-    status = 'ENABLED';
-  } else if (roleStatusUpper === 'DISABLED' || roleStatusUpper === '0') {
-    status = 'DISABLED';
-  } else {
-    // 默认使用原始值
-    status = backendRole.roleStatus;
-  }
+  const normalizedStatus = normalizeSystemStatus(backendRole.roleStatus);
+  const status =
+    normalizedStatus === 'UNKNOWN' ? backendRole.roleStatus : normalizedStatus;
 
   return {
     id: backendRole.id,
@@ -98,7 +90,7 @@ async function getRoleList(params: Recordable<any>) {
 
   // 转换分页结果并映射字段
   const transformed = transformPagingResult({
-    list: res.list.map(mapRoleFromBackend),
+    list: res.list.map((item) => mapRoleFromBackend(item)),
     total: res.total,
   });
 

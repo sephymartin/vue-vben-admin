@@ -5,7 +5,21 @@ import type { SystemUserApi } from '#/api/system/user';
 import { z } from '#/adapter/form';
 import { adaptDeptData, getDeptList } from '#/api/system/dept';
 import { getRoleList } from '#/api/system/role';
+import {
+  buildEnabledDisabledTagOptions,
+  resolveSystemStatusActionState,
+  SYSTEM_STATUS,
+} from '#/constants/system-status';
 import { $t } from '#/locales';
+
+function getUserStatusOptions() {
+  return buildEnabledDisabledTagOptions(
+    SYSTEM_STATUS.ENABLED,
+    SYSTEM_STATUS.DISABLED,
+    $t('common.enabled'),
+    $t('common.disabled'),
+  );
+}
 
 export function useFormSchema(): VbenFormSchema[] {
   return [
@@ -92,12 +106,12 @@ export function useFormSchema(): VbenFormSchema[] {
     {
       component: 'RadioGroup',
       componentProps: {
-        options: [
-          { label: $t('common.enabled'), value: 'ENABLED' },
-          { label: $t('common.disabled'), value: 'DISABLED' },
-        ],
+        options: getUserStatusOptions().map((item) => ({
+          label: item.label,
+          value: item.value,
+        })),
       },
-      defaultValue: 'ENABLED',
+      defaultValue: SYSTEM_STATUS.ENABLED,
       fieldName: 'userStatus',
       label: $t('system.user.status'),
     },
@@ -136,10 +150,10 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         clearable: true,
-        options: [
-          { label: $t('common.enabled'), value: 'ENABLED' },
-          { label: $t('common.disabled'), value: 'DISABLED' },
-        ],
+        options: getUserStatusOptions().map((item) => ({
+          label: item.label,
+          value: item.value,
+        })),
       },
       fieldName: 'userStatus',
       label: $t('system.user.status'),
@@ -157,7 +171,6 @@ export function useGridFormSchema(): VbenFormSchema[] {
 
 export function useColumns<T = SystemUserApi.SystemUser>(
   onActionClick: OnActionClickFn<T>,
-  onStatusChange?: (newStatus: any, row: T) => PromiseLike<boolean | undefined>,
 ): VxeTableGridOptions['columns'] {
   return [
     {
@@ -182,20 +195,12 @@ export function useColumns<T = SystemUserApi.SystemUser>(
     },
     {
       cellRender: {
-        attrs: {
-          beforeChange: onStatusChange,
-          checkedValue: 'ENABLED',
-          uncheckedValue: 'DISABLED',
-        },
-        name: onStatusChange ? 'CellSwitch' : 'CellTag',
-        props: {
-          activeText: '',
-          inactiveText: '',
-        },
+        name: 'CellTag',
+        options: getUserStatusOptions(),
       },
       field: 'userStatus',
       title: $t('system.user.status'),
-      width: 80,
+      width: 100,
     },
     {
       field: 'createdTime',
@@ -211,11 +216,27 @@ export function useColumns<T = SystemUserApi.SystemUser>(
           onClick: onActionClick,
         },
         name: 'CellOperation',
+        options: [
+          {
+            code: 'disable',
+            disabled: (row: SystemUserApi.SystemUser) =>
+              !resolveSystemStatusActionState(row.userStatus).canDisable,
+            text: $t('system.user.actions.disable'),
+          },
+          {
+            code: 'enable',
+            disabled: (row: SystemUserApi.SystemUser) =>
+              !resolveSystemStatusActionState(row.userStatus).canEnable,
+            text: $t('system.user.actions.enable'),
+          },
+          'edit',
+          'delete',
+        ],
       },
       field: 'operation',
       fixed: 'right',
       title: $t('system.user.operation'),
-      width: 120,
+      width: 230,
     },
   ];
 }

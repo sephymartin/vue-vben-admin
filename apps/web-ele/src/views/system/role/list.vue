@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import type { Recordable } from '@vben/types';
-
 import type {
   OnActionClickParams,
   VxeTableGridOptions,
@@ -14,6 +12,10 @@ import { ElButton, ElMessage, ElMessageBox } from 'element-plus';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteRole, getRoleList, updateRoleStatus } from '#/api/system/role';
+import {
+  resolveSystemStatusActionState,
+  SYSTEM_STATUS,
+} from '#/constants/system-status';
 import { $t } from '#/locales';
 
 import { useColumns, useGridFormSchema } from './data';
@@ -31,7 +33,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     submitOnChange: true,
   },
   gridOptions: {
-    columns: useColumns(onActionClick, onStatusChange),
+    columns: useColumns(onActionClick),
     height: 'auto',
     keepSource: true,
     proxyConfig: {
@@ -65,31 +67,75 @@ function onActionClick(e: OnActionClickParams<SystemRoleApi.SystemRole>) {
       onDelete(e.row);
       break;
     }
+    case 'disable': {
+      if (resolveSystemStatusActionState(e.row.status).canDisable) {
+        onDisable(e.row);
+      }
+      break;
+    }
     case 'edit': {
       onEdit(e.row);
+      break;
+    }
+    case 'enable': {
+      if (resolveSystemStatusActionState(e.row.status).canEnable) {
+        onEnable(e.row);
+      }
       break;
     }
   }
 }
 
-async function onStatusChange(
-  newStatus: string,
-  row: SystemRoleApi.SystemRole,
+async function withConfirmAction(
+  name: string,
+  action: () => Promise<unknown>,
+  message: string,
 ) {
-  const status: Recordable<string> = {
-    ENABLED: '启用',
-    DISABLED: '禁用',
-  };
   try {
-    await ElMessageBox.confirm(
-      `你要将${row.name}的状态切换为 【${status[newStatus]}】 吗？`,
-      '切换状态',
-    );
-    await updateRoleStatus({ roleId: row.id, roleStatus: newStatus });
-    return true;
+    await ElMessageBox.confirm(message, $t('common.warning'), {
+      type: 'warning',
+    });
+
+    const loading = ElMessage({
+      duration: 0,
+      message: $t('system.role.messages.processing', [name]),
+      type: 'info',
+    });
+
+    try {
+      await action();
+      loading.close();
+      onRefresh();
+    } catch {
+      loading.close();
+    }
   } catch {
-    return false;
+    // user cancelled
   }
+}
+
+async function onEnable(row: SystemRoleApi.SystemRole) {
+  await withConfirmAction(
+    row.name,
+    () =>
+      updateRoleStatus({
+        roleId: row.id,
+        roleStatus: SYSTEM_STATUS.ENABLED,
+      }),
+    $t('system.role.messages.enableConfirm', [row.name]),
+  );
+}
+
+async function onDisable(row: SystemRoleApi.SystemRole) {
+  await withConfirmAction(
+    row.name,
+    () =>
+      updateRoleStatus({
+        roleId: row.id,
+        roleStatus: SYSTEM_STATUS.DISABLED,
+      }),
+    $t('system.role.messages.disableConfirm', [row.name]),
+  );
 }
 
 function onEdit(row: SystemRoleApi.SystemRole) {
