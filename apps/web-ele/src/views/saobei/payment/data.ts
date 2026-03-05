@@ -73,13 +73,13 @@ export function useGridFormSchema(): VbenFormSchema[] {
 }
 
 export function useColumns<T = SaobeiPaymentApi.SaobeiPayment>(
-  onActionClick: OnActionClickFn<T>,
+  _onActionClick: OnActionClickFn<T>,
 ): VxeTableGridOptions['columns'] {
   return [
     {
       field: 'title',
       title: $t('saobei.payment.orderTitle'),
-      width: 200,
+      minWidth: 180,
     },
     {
       field: 'amount',
@@ -96,7 +96,7 @@ export function useColumns<T = SaobeiPaymentApi.SaobeiPayment>(
     {
       field: 'merchantOrderNo',
       title: $t('saobei.payment.merchantOrderNo'),
-      width: 200,
+      minWidth: 180,
     },
     {
       field: 'merchantNo',
@@ -106,21 +106,33 @@ export function useColumns<T = SaobeiPaymentApi.SaobeiPayment>(
     {
       field: 'batchNo',
       title: $t('saobei.payment.batchNo'),
-      width: 200,
+      minWidth: 180,
     },
     {
       cellRender: {
         name: 'CellTag',
-        props: {
-          type: (row: T) => {
-            const record = row as SaobeiPaymentApi.SaobeiPayment;
-            const status = record.paymentStatus;
-            if (status === 'SUCCESS') return 'success';
-            if (status === 'ERROR') return 'danger';
-            if (status === 'CANCELLED') return 'info';
-            return 'warning';
+        options: [
+          {
+            label: $t('saobei.payment.paymentStatus.INIT'),
+            type: 'warning',
+            value: 'INIT',
           },
-        },
+          {
+            label: $t('saobei.payment.paymentStatus.SUCCESS'),
+            type: 'success',
+            value: 'SUCCESS',
+          },
+          {
+            label: $t('saobei.payment.paymentStatus.ERROR'),
+            type: 'danger',
+            value: 'ERROR',
+          },
+          {
+            label: $t('saobei.payment.paymentStatus.CANCELLED'),
+            type: 'info',
+            value: 'CANCELLED',
+          },
+        ],
       },
       field: 'paymentStatus',
       title: $t('saobei.payment.paymentStatus.label'),
@@ -129,16 +141,28 @@ export function useColumns<T = SaobeiPaymentApi.SaobeiPayment>(
     {
       cellRender: {
         name: 'CellTag',
-        props: {
-          type: (row: T) => {
-            const record = row as SaobeiPaymentApi.SaobeiPayment;
-            const status = record.notifyStatus;
-            if (status === 'SUCCESS') return 'success';
-            if (status === 'PROCESSING') return 'warning';
-            if (status === 'FAILED') return 'danger';
-            return 'info';
+        options: [
+          {
+            label: $t('saobei.payment.notifyStatus.INIT'),
+            type: 'info',
+            value: 'INIT',
           },
-        },
+          {
+            label: $t('saobei.payment.notifyStatus.PROCESSING'),
+            type: 'warning',
+            value: 'PROCESSING',
+          },
+          {
+            label: $t('saobei.payment.notifyStatus.SUCCESS'),
+            type: 'success',
+            value: 'SUCCESS',
+          },
+          {
+            label: $t('saobei.payment.notifyStatus.FAILED'),
+            type: 'danger',
+            value: 'FAILED',
+          },
+        ],
       },
       field: 'notifyStatus',
       title: $t('saobei.payment.notifyStatus.label'),
@@ -152,32 +176,32 @@ export function useColumns<T = SaobeiPaymentApi.SaobeiPayment>(
     {
       field: 'notifyTime',
       title: $t('saobei.payment.notifyTime'),
-      width: 200,
+      width: 180,
     },
     {
       field: 'nextNotifyTime',
       title: $t('saobei.payment.nextNotifyTime'),
-      width: 200,
+      width: 180,
     },
     {
       field: 'errorMsg',
       title: $t('saobei.payment.errorMsg'),
-      minWidth: 200,
+      minWidth: 220,
     },
     {
       field: 'beginTime',
       title: $t('saobei.payment.beginTime'),
-      width: 200,
+      width: 180,
     },
     {
       field: 'endTime',
       title: $t('saobei.payment.endTime'),
-      width: 200,
+      width: 180,
     },
     {
       field: 'createdAt',
       title: $t('saobei.payment.createdAt'),
-      width: 200,
+      width: 180,
     },
   ];
 }

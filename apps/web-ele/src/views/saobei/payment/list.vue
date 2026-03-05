@@ -3,7 +3,7 @@ import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SaobeiPaymentApi } from '#/api/saobei/payment';
 
 import { Page } from '@vben/common-ui';
-import { Download } from '@vben/icons';
+import { SvgDownloadIcon } from '@vben/icons';
 
 import { ElButton } from 'element-plus';
 
@@ -47,10 +47,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
   } as VxeTableGridOptions<SaobeiPaymentApi.SaobeiPayment>,
 });
 
-function onRefresh() {
-  gridApi.query();
-}
-
 async function onExport() {
   const formValues = gridApi.getFormValues();
   await exportPayment(formValues);
@@ -61,7 +57,7 @@ async function onExport() {
     <Grid :table-title="$t('saobei.payment.list')">
       <template #toolbar-tools>
         <ElButton type="primary" @click="onExport">
-          <Download class="size-5" />
+          <SvgDownloadIcon class="size-5" />
           {{ $t('saobei.payment.export') }}
         </ElButton>
       </template>
